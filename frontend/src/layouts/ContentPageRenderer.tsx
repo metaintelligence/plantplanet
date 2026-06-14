@@ -1,9 +1,9 @@
 import type { GeneratedContent, PlantRecord } from '../types/content';
-import ChecklistContentPage from './ChecklistContentPage';
-import IntroContentPage from './IntroContentPage';
-import MissionContentPage from './MissionContentPage';
-import QuizContentPage from './QuizContentPage';
-import StorytellingContentPage from './StorytellingContentPage';
+import DefaultLayoutChecklistPage from './DefaultLayoutChecklistPage';
+import DefaultLayoutIntroPage from './DefaultLayoutIntroPage';
+import DefaultLayoutMissionPage from './DefaultLayoutMissionPage';
+import DefaultLayoutQuizPage from './DefaultLayoutQuizPage';
+import DefaultLayoutStorytellingPage from './DefaultLayoutStorytellingPage';
 
 export default function ContentPageRenderer({
   content,
@@ -14,15 +14,15 @@ export default function ContentPageRenderer({
 }) {
   switch (content.settings.template) {
     case 'storytelling':
-      return <StorytellingContentPage content={content} plant={plant} />;
+      return <DefaultLayoutStorytellingPage content={content} plant={plant} />;
     case 'quiz':
-      return <QuizContentPage content={content} plant={plant} />;
+      return <DefaultLayoutQuizPage content={content} plant={plant} />;
     case 'mission':
-      return <MissionContentPage content={content} plant={plant} />;
+      return <DefaultLayoutMissionPage content={content} plant={plant} />;
     case 'checklist':
-      return <ChecklistContentPage content={content} plant={plant} />;
+      return <DefaultLayoutChecklistPage content={content} plant={plant} />;
     case 'intro':
     default:
-      return <IntroContentPage content={content} plant={plant} />;
+      return <DefaultLayoutIntroPage content={content} plant={plant} />;
   }
 }
