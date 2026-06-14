@@ -229,6 +229,196 @@
         "license": "Wikimedia Commons file license"
       },
       "similarPlantIds": ["hanabusaya-asiatica", "prunus-yedoensis", "abeliophyllum-distichum"]
+    },
+    {
+      "id": "robinia-pseudoacacia",
+      "category": "tree",
+      "koreanName": "아까시나무(아카시아)",
+      "scientificName": "Robinia pseudoacacia",
+      "commonName": "Black locust",
+      "family": "콩과",
+      "origin": "북아메리카 원산, 한국에는 조림과 사방용으로 널리 식재",
+      "habitat": "햇빛이 잘 드는 길가, 공원, 산림 가장자리",
+      "size": "높이 10~25m",
+      "floweringSeason": "5~6월",
+      "features": [
+        "향기가 강한 흰색 꽃송이",
+        "콩꼬투리처럼 생긴 열매",
+        "잎이 여러 장의 작은 잎으로 나뉘는 깃꼴겹잎"
+      ],
+      "conservationMessage": "꿀벌과 꽃가루받이 생물을 관찰하기 좋지만, 빠르게 번질 수 있어 생태계 균형도 함께 설명하기 좋은 나무입니다.",
+      "observationTips": [
+        "꽃송이가 아래로 늘어진 모양 관찰하기",
+        "작은 잎이 줄기 양쪽에 어떻게 배열되는지 세어보기",
+        "벌과 곤충이 꽃을 찾는 모습을 멀리서 관찰하기"
+      ],
+      "seasonHighlights": {
+        "spring": "향기로운 흰 꽃송이가 피어 곤충 관찰에 좋습니다.",
+        "summer": "촘촘한 잎과 길게 자라는 새가지를 관찰할 수 있습니다.",
+        "autumn": "콩꼬투리 모양 열매와 잎 색 변화를 볼 수 있습니다.",
+        "winter": "잎이 진 뒤 거친 수피와 가지의 가시 흔적을 확인할 수 있습니다.",
+        "auto": "향기로운 꽃과 곤충 방문을 연결해 설명하기 좋은 나무입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Robinia_pseudoacacia_flower.jpg",
+        "alt": "아까시나무 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Robinia_pseudoacacia_flower.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["prunus-yedoensis", "hibiscus-syriacus", "pinus-densiflora"]
+    },
+    {
+      "id": "hibiscus-syriacus",
+      "category": "shrub",
+      "koreanName": "무궁화",
+      "scientificName": "Hibiscus syriacus",
+      "commonName": "Rose of Sharon",
+      "family": "아욱과",
+      "origin": "동아시아에서 오래전부터 재배된 낙엽 관목",
+      "habitat": "햇빛이 충분한 정원, 공원, 울타리 주변",
+      "size": "높이 2~4m",
+      "floweringSeason": "7~10월",
+      "features": [
+        "여름부터 가을까지 이어지는 큰 꽃",
+        "하루씩 피고 지는 꽃이 계속 새로 피는 특징",
+        "가운데가 진한 색을 띠는 품종이 많음"
+      ],
+      "conservationMessage": "나라꽃으로 잘 알려져 있어 식물의 문화적 의미와 생태 관찰을 함께 연결하기 좋습니다.",
+      "observationTips": [
+        "꽃잎과 가운데 무늬 색 비교하기",
+        "하루 동안 핀 꽃과 시든 꽃을 구분해보기",
+        "방문하는 벌과 나비를 멀리서 관찰하기"
+      ],
+      "seasonHighlights": {
+        "spring": "새 잎과 가지 끝의 꽃눈이 자라는 모습을 볼 수 있습니다.",
+        "summer": "큰 꽃이 계속 피어 관람객이 가장 쉽게 알아볼 수 있습니다.",
+        "autumn": "늦가을까지 이어지는 꽃과 열매 변화를 함께 관찰할 수 있습니다.",
+        "winter": "잎이 진 뒤 가지 구조와 마른 열매 흔적을 볼 수 있습니다.",
+        "auto": "오랫동안 피는 꽃과 문화적 상징성을 함께 설명하기 좋은 식물입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hibiscus_syriacus_red.jpg",
+        "alt": "무궁화 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hibiscus_syriacus_red.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["camellia-japonica", "robinia-pseudoacacia", "hydrangea-serrata"]
+    },
+    {
+      "id": "ginkgo-biloba",
+      "category": "tree",
+      "koreanName": "은행나무",
+      "scientificName": "Ginkgo biloba",
+      "commonName": "Ginkgo",
+      "family": "은행나무과",
+      "origin": "동아시아 원산으로 오래전부터 사찰, 궁궐, 도시 가로수로 식재",
+      "habitat": "햇빛이 드는 공원, 가로수길, 사찰 주변",
+      "size": "높이 20~35m",
+      "floweringSeason": "4월 무렵 수분, 가을에 종자 관찰",
+      "features": [
+        "부채 모양의 잎",
+        "가을에 노랗게 물드는 단풍",
+        "암나무와 수나무가 따로 있는 특징"
+      ],
+      "conservationMessage": "오래 사는 나무와 도시 생태, 살아있는 화석이라는 개념을 설명하기 좋은 대표 수종입니다.",
+      "observationTips": [
+        "잎맥이 부채처럼 퍼지는 모양 관찰하기",
+        "가을에 노란 잎이 떨어지는 모습을 상상해보기",
+        "큰 나무 주변 그늘과 도시 환경의 관계 생각하기"
+      ],
+      "seasonHighlights": {
+        "spring": "연둣빛 새잎이 부채 모양으로 펼쳐지기 시작합니다.",
+        "summer": "짙은 녹색 잎이 그늘을 만들고 도시 열기를 줄이는 역할을 합니다.",
+        "autumn": "노란 단풍이 가장 선명해 잎 모양을 관찰하기 좋습니다.",
+        "winter": "잎이 진 뒤 곧게 뻗은 가지와 수형을 확인할 수 있습니다.",
+        "auto": "부채 모양 잎과 긴 수명을 통해 식물 진화를 이야기하기 좋은 나무입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Ginkgo_biloba_-_Leaves.JPG",
+        "alt": "은행나무 잎",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ginkgo_biloba_-_Leaves.JPG",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["pinus-densiflora", "acer-palmatum", "prunus-yedoensis"]
+    },
+    {
+      "id": "pinus-densiflora",
+      "category": "tree",
+      "koreanName": "소나무",
+      "scientificName": "Pinus densiflora",
+      "commonName": "Japanese red pine",
+      "family": "소나무과",
+      "origin": "한국과 동아시아 온대 지역",
+      "habitat": "건조한 산지, 능선, 햇빛이 잘 드는 숲",
+      "size": "높이 15~30m",
+      "floweringSeason": "4~5월 수분, 가을부터 솔방울 관찰",
+      "features": [
+        "두 개씩 모여 나는 바늘잎",
+        "붉은빛이 도는 수피",
+        "비늘 조각이 겹친 솔방울"
+      ],
+      "conservationMessage": "한국 산림 경관과 문화에서 중요한 나무로 산불 예방, 병해충 관리, 숲 보전 이야기를 함께 전달할 수 있습니다.",
+      "observationTips": [
+        "바늘잎이 몇 개씩 묶여 있는지 확인하기",
+        "나무껍질의 붉은빛과 갈라진 무늬 관찰하기",
+        "솔방울의 비늘 조각이 겹친 방향 살펴보기"
+      ],
+      "seasonHighlights": {
+        "spring": "새순과 어린 수분구조가 올라오는 모습을 볼 수 있습니다.",
+        "summer": "푸른 바늘잎과 붉은 수피의 대비가 뚜렷합니다.",
+        "autumn": "단단해지는 솔방울과 바늘잎을 함께 관찰할 수 있습니다.",
+        "winter": "상록 바늘잎이 겨울 숲의 색을 유지합니다.",
+        "auto": "바늘잎, 솔방울, 붉은 수피로 소나무과 특징을 설명하기 좋습니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Pinus_densiflora_%28Japanese_Red_Pine%29.jpg",
+        "alt": "소나무",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pinus_densiflora_(Japanese_Red_Pine).jpg",
+        "license": "CC BY 2.0"
+      },
+      "similarPlantIds": ["abies-koreana", "ginkgo-biloba", "robinia-pseudoacacia"]
+    },
+    {
+      "id": "nelumbo-nucifera",
+      "category": "herb",
+      "koreanName": "연꽃",
+      "scientificName": "Nelumbo nucifera",
+      "commonName": "Sacred lotus",
+      "family": "연꽃과",
+      "origin": "아시아와 오세아니아의 따뜻한 습지에 널리 분포",
+      "habitat": "연못, 늪, 수생식물원, 물이 고인 습지",
+      "size": "잎 지름 30~60cm, 꽃 지름 10~25cm",
+      "floweringSeason": "7~8월",
+      "features": [
+        "물 위로 높게 올라오는 둥근 잎",
+        "큰 분홍색 또는 흰색 꽃",
+        "샤워기처럼 생긴 연밥"
+      ],
+      "conservationMessage": "습지 생태계의 물, 곤충, 식물 관계를 설명하기 좋아 수변 환경 보전 메시지와 연결할 수 있습니다.",
+      "observationTips": [
+        "잎 표면에 물방울이 맺히는 모습을 관찰하기",
+        "꽃과 잎이 물 위로 얼마나 올라오는지 비교하기",
+        "연밥의 구멍 배열을 살펴보기"
+      ],
+      "seasonHighlights": {
+        "spring": "물속에서 새 잎이 올라오기 시작하는 변화를 볼 수 있습니다.",
+        "summer": "큰 꽃과 둥근 잎, 물방울 관찰이 가장 좋습니다.",
+        "autumn": "연밥과 씨앗 구조를 관찰할 수 있습니다.",
+        "winter": "지상부가 줄어든 뒤 습지의 계절 변화를 이야기할 수 있습니다.",
+        "auto": "물 위에 사는 식물의 적응과 습지 생태를 설명하기 좋습니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Nelumbo_nucifera_flower.jpg",
+        "alt": "연꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nelumbo_nucifera_flower.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["hydrangea-serrata", "hanabusaya-asiatica", "hibiscus-syriacus"]
     }
   ]
 }
