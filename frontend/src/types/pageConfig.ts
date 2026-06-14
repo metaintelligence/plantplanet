@@ -7,11 +7,34 @@ export type PlantName =
   | '산수국';
 
 export type TemplateType = 'intro' | 'storytelling' | 'quiz' | 'mission' | 'checklist';
-export type PagePurpose = 'general' | 'education' | 'experience' | 'campaign' | 'promotion';
+export type PagePurpose =
+  | 'general'
+  | 'education'
+  | 'experience'
+  | 'campaign'
+  | 'promotion'
+  | 'route';
 export type Audience = 'children' | 'adults' | 'foreigners';
 export type Language = 'ko' | 'en' | 'ja' | 'zh';
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'auto';
 export type EstimatedTime = '10sec' | '30sec' | '1min' | '3min';
+export type DeploymentUse =
+  | 'plantQr'
+  | 'kiosk'
+  | 'mobileCourse'
+  | 'educationProgram'
+  | 'sns';
+export type FieldLocation = 'greenhouse' | 'garden' | 'outdoorGarden' | 'forestTrail' | 'park';
+export type FocusTopic =
+  | 'appearance'
+  | 'ecology'
+  | 'nameOrigin'
+  | 'cultureHistory'
+  | 'usage'
+  | 'conservation'
+  | 'comparison'
+  | 'funFacts';
+export type FeatureOption = 'voiceGuide' | 'qaAi' | 'similarPlantCards';
 
 export interface GenerateInput {
   plantName: PlantName;
@@ -21,6 +44,10 @@ export interface GenerateInput {
   language: Language;
   season: Season;
   estimatedTime: EstimatedTime;
+  deploymentUse: DeploymentUse;
+  fieldLocation: FieldLocation;
+  focusTopics: FocusTopic[];
+  featureOptions: FeatureOption[];
   extraRequest: string;
 }
 
@@ -45,6 +72,11 @@ export type Section =
       type: 'similarPlants';
       title: string;
       plants: string[];
+    }
+  | {
+      type: 'deployment';
+      title: string;
+      items: string[];
     };
 
 export interface PageConfig {
@@ -57,6 +89,9 @@ export interface PageConfig {
   language: Language;
   season: Season;
   estimatedTime: EstimatedTime;
+  deploymentUse: DeploymentUse;
+  fieldLocation: FieldLocation;
+  featureOptions: FeatureOption[];
   sections: Section[];
 }
 

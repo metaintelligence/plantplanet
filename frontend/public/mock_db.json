@@ -1,0 +1,234 @@
+{
+  "version": "0.1.0",
+  "description": "HanGarden demo mock database for plants and trees. Image URLs point to Wikimedia Commons file redirects with source metadata.",
+  "plants": [
+    {
+      "id": "abies-koreana",
+      "category": "tree",
+      "koreanName": "구상나무",
+      "scientificName": "Abies koreana",
+      "commonName": "Korean fir",
+      "family": "소나무과",
+      "origin": "한반도 남부 고산지대",
+      "habitat": "지리산, 한라산 등 서늘한 고산 숲",
+      "size": "높이 10~18m",
+      "floweringSeason": "5월 무렵 수분, 여름부터 솔방울 관찰",
+      "features": [
+        "짧고 촘촘한 바늘잎",
+        "위로 곧게 서는 보라빛 어린 솔방울",
+        "겨울에도 잎을 유지하는 상록 침엽수"
+      ],
+      "conservationMessage": "기후변화로 고산 서식지가 줄어들 수 있어 장기 모니터링과 보전 안내가 중요한 식물입니다.",
+      "observationTips": [
+        "잎 뒷면의 흰 기공선을 찾아보기",
+        "솔방울이 아래로 처지지 않고 위를 향하는지 확인하기",
+        "주변 온도와 바람이 식물 생장에 어떤 영향을 줄지 생각해보기"
+      ],
+      "seasonHighlights": {
+        "spring": "새순과 어린 수분구조를 관찰하기 좋습니다.",
+        "summer": "보라빛을 띠는 어린 솔방울과 짙은 녹색 잎이 돋보입니다.",
+        "autumn": "단단해지는 솔방울과 상록 잎의 대비를 볼 수 있습니다.",
+        "winter": "눈 속에서도 잎을 유지하는 상록 침엽수의 특성을 확인할 수 있습니다.",
+        "auto": "계절에 따라 잎, 새순, 솔방울의 변화가 뚜렷하게 드러납니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Abies_koreana_cone.jpg",
+        "alt": "구상나무 솔방울",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Abies_koreana_cone.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["camellia-japonica", "prunus-yedoensis", "hydrangea-serrata"]
+    },
+    {
+      "id": "abeliophyllum-distichum",
+      "category": "shrub",
+      "koreanName": "미선나무",
+      "scientificName": "Abeliophyllum distichum",
+      "commonName": "Korean abelia leaf",
+      "family": "물푸레나무과",
+      "origin": "한국 고유종",
+      "habitat": "햇빛이 드는 숲 가장자리와 석회암 지대",
+      "size": "높이 1~2m",
+      "floweringSeason": "3~4월",
+      "features": [
+        "잎보다 먼저 피는 흰색 또는 연분홍색 꽃",
+        "은은한 향기",
+        "부채 모양의 납작한 열매"
+      ],
+      "conservationMessage": "한국 고유종으로 자생지 훼손에 민감해 관찰 시 채집하지 않는 안내가 필요합니다.",
+      "observationTips": [
+        "꽃 향기를 멀리서 맡아보기",
+        "열매가 부채처럼 펼쳐지는 모양 상상하기",
+        "개나리와 닮은 점과 다른 점 비교하기"
+      ],
+      "seasonHighlights": {
+        "spring": "잎보다 먼저 피는 밝은 꽃과 향기를 관찰하기 좋습니다.",
+        "summer": "초록 잎과 열매의 형태를 볼 수 있습니다.",
+        "autumn": "가지와 열매 흔적을 통해 봄의 꽃 구조를 떠올릴 수 있습니다.",
+        "winter": "잎이 진 뒤 가지 구조와 겨울눈을 확인할 수 있습니다.",
+        "auto": "꽃, 잎, 열매가 계절별로 크게 달라지는 한국 고유종입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Abeliophyllum-distichum.jpg",
+        "alt": "미선나무 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Abeliophyllum-distichum.jpg",
+        "license": "CC BY-SA 4.0"
+      },
+      "similarPlantIds": ["prunus-yedoensis", "hanabusaya-asiatica", "hydrangea-serrata"]
+    },
+    {
+      "id": "camellia-japonica",
+      "category": "tree",
+      "koreanName": "동백나무",
+      "scientificName": "Camellia japonica",
+      "commonName": "Camellia",
+      "family": "차나무과",
+      "origin": "동아시아 난대림",
+      "habitat": "남부 해안과 섬 지역의 상록활엽수림",
+      "size": "높이 3~7m",
+      "floweringSeason": "12~4월",
+      "features": [
+        "윤기 있는 두꺼운 상록 잎",
+        "겨울과 이른 봄에 피는 붉은 꽃",
+        "꽃잎이 흩어지지 않고 통째로 떨어지는 특징"
+      ],
+      "conservationMessage": "난대림의 계절성과 생물 상호작용을 설명하기 좋은 수종으로 기후변화 관찰 소재가 됩니다.",
+      "observationTips": [
+        "잎 표면의 윤기와 두께 관찰하기",
+        "꽃이 떨어지는 방식 확인하기",
+        "겨울에 꽃을 찾는 생물을 상상해보기"
+      ],
+      "seasonHighlights": {
+        "spring": "붉은 꽃과 새 잎의 변화를 함께 볼 수 있습니다.",
+        "summer": "짙은 녹색 상록 잎이 빛을 반사하는 모습을 관찰하기 좋습니다.",
+        "autumn": "열매와 잎의 구조를 확인할 수 있습니다.",
+        "winter": "추운 계절에 피는 꽃이 관람객의 시선을 끕니다.",
+        "auto": "상록 잎과 붉은 꽃으로 계절 대비를 보여주는 대표 수종입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Camellia_japonica_NBG.jpg",
+        "alt": "동백나무 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Camellia_japonica_NBG.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["abies-koreana", "prunus-yedoensis", "abeliophyllum-distichum"]
+    },
+    {
+      "id": "prunus-yedoensis",
+      "category": "tree",
+      "koreanName": "왕벚나무",
+      "scientificName": "Prunus x yedoensis",
+      "commonName": "Yoshino cherry",
+      "family": "장미과",
+      "origin": "동아시아 온대 지역에서 널리 식재",
+      "habitat": "햇빛이 충분한 정원, 공원, 온대 숲 가장자리",
+      "size": "높이 8~15m",
+      "floweringSeason": "3~4월",
+      "features": [
+        "잎보다 먼저 피는 연분홍 꽃",
+        "짧은 기간 집중적으로 피는 봄꽃",
+        "넓게 퍼지는 수형"
+      ],
+      "conservationMessage": "봄철 관람 수요가 높아 훼손 방지와 분산 관람 안내를 함께 제공하기 좋습니다.",
+      "observationTips": [
+        "꽃자루와 꽃잎 수 관찰하기",
+        "꽃이 핀 뒤 잎이 나오는 순서 확인하기",
+        "비슷한 벚나무류와 꽃 색을 비교하기"
+      ],
+      "seasonHighlights": {
+        "spring": "짧고 풍성하게 피는 꽃이 가장 큰 관찰 포인트입니다.",
+        "summer": "잎과 그늘을 통해 수형을 이해할 수 있습니다.",
+        "autumn": "잎 색 변화와 가지 구조를 관찰하기 좋습니다.",
+        "winter": "꽃눈과 가지 끝을 보며 다음 봄의 개화를 상상할 수 있습니다.",
+        "auto": "봄꽃과 넓은 수형으로 관람 동선을 만들기 좋은 나무입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Prunus_x_yedoensis2.jpg",
+        "alt": "왕벚나무 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prunus_x_yedoensis2.jpg",
+        "license": "CC BY-SA 2.1 JP"
+      },
+      "similarPlantIds": ["abeliophyllum-distichum", "camellia-japonica", "hydrangea-serrata"]
+    },
+    {
+      "id": "hanabusaya-asiatica",
+      "category": "herb",
+      "koreanName": "금강초롱꽃",
+      "scientificName": "Hanabusaya asiatica",
+      "commonName": "Diamond bluebell",
+      "family": "초롱꽃과",
+      "origin": "한국 고유종",
+      "habitat": "서늘하고 그늘진 산지 숲",
+      "size": "높이 30~90cm",
+      "floweringSeason": "8~9월",
+      "features": [
+        "아래를 향해 피는 종 모양 꽃",
+        "차분한 보랏빛 꽃색",
+        "한국 산지 생태를 상징하는 고유 식물"
+      ],
+      "conservationMessage": "희귀성과 고유성을 설명하기 좋아 채집 금지와 서식지 보전 메시지를 강조해야 합니다.",
+      "observationTips": [
+        "꽃이 아래를 향한 이유 상상하기",
+        "종 모양 꽃의 입구와 잎 배열 관찰하기",
+        "사진만 남기고 식물체는 건드리지 않기"
+      ],
+      "seasonHighlights": {
+        "spring": "새잎이 올라오는 산지 초본의 생장을 이야기할 수 있습니다.",
+        "summer": "보랏빛 종 모양 꽃을 관찰하기 가장 좋습니다.",
+        "autumn": "꽃이 진 뒤 씨앗과 줄기 변화를 살펴볼 수 있습니다.",
+        "winter": "지상부가 사라진 뒤에도 땅속에서 다음 계절을 준비합니다.",
+        "auto": "한국 고유종의 보전 가치를 전달하기 좋은 식물입니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanabusaya_asiatica-IMG_5656.jpg",
+        "alt": "금강초롱꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hanabusaya_asiatica-IMG_5656.jpg",
+        "license": "CC BY-SA 3.0"
+      },
+      "similarPlantIds": ["hydrangea-serrata", "abeliophyllum-distichum", "abies-koreana"]
+    },
+    {
+      "id": "hydrangea-serrata",
+      "category": "shrub",
+      "koreanName": "산수국",
+      "scientificName": "Hydrangea serrata",
+      "commonName": "Mountain hydrangea",
+      "family": "수국과",
+      "origin": "한국과 일본의 산지",
+      "habitat": "습기가 있는 계곡, 숲길, 산기슭",
+      "size": "높이 0.5~2m",
+      "floweringSeason": "6~8월",
+      "features": [
+        "가장자리 장식꽃과 안쪽의 작은 꽃",
+        "토양과 환경에 따라 달라지는 꽃빛",
+        "습윤한 숲 환경을 보여주는 지표 식물"
+      ],
+      "conservationMessage": "계곡 주변 수분 환경과 숲의 건강성을 연결해 설명하기 좋은 식물입니다.",
+      "observationTips": [
+        "가장자리 꽃과 안쪽 꽃의 역할 비교하기",
+        "꽃 색이 장소마다 다른지 살펴보기",
+        "습한 숲길 환경과 식물의 관계 생각하기"
+      ],
+      "seasonHighlights": {
+        "spring": "새 잎과 꽃눈이 자라는 모습을 볼 수 있습니다.",
+        "summer": "장식꽃과 작은 꽃이 함께 피는 구조가 뚜렷합니다.",
+        "autumn": "꽃이 마른 뒤 남는 질감과 잎 색 변화를 관찰할 수 있습니다.",
+        "winter": "가지와 마른 꽃차례로 지난 계절의 흔적을 읽을 수 있습니다.",
+        "auto": "꽃 구조와 습지성 숲 환경을 연결해 설명하기 좋습니다."
+      },
+      "image": {
+        "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hydrangea_serrata-fully_grown_flowers_with_leaves.jpg",
+        "alt": "산수국 꽃",
+        "source": "Wikimedia Commons",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hydrangea_serrata-fully_grown_flowers_with_leaves.jpg",
+        "license": "Wikimedia Commons file license"
+      },
+      "similarPlantIds": ["hanabusaya-asiatica", "prunus-yedoensis", "abeliophyllum-distichum"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<svg width="340" height="112" viewBox="0 0 340 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">HanGarden logo</title>
+  <desc id="desc">Layered mountain, garden, and path symbol with HanGarden wordmark.</desc>
+  <rect width="340" height="112" rx="18" fill="#FBFCF7"/>
+  <path d="M24 52C55 42 80 38 104 43C136 49 151 66 184 70C213 73 241 65 278 50C292 44 306 41 322 44C283 58 258 68 230 74C194 82 166 75 139 62C104 46 73 44 24 52Z" fill="#D6B34A"/>
+  <path d="M20 76C49 61 79 42 106 20C124 6 143 6 159 21C177 38 194 58 221 60C245 62 272 51 311 63C273 68 238 79 199 79C161 79 139 61 111 51C79 39 55 55 20 76Z" fill="#7FAA55"/>
+  <path d="M25 76C58 59 89 54 124 58C154 62 177 73 208 73C239 73 263 64 298 64C267 75 237 83 204 83C171 83 146 72 116 65C85 58 60 64 25 76Z" fill="#6F5A8B" opacity="0.88"/>
+  <path d="M23 77C58 68 86 64 116 65C146 66 174 82 205 82C233 82 257 75 291 66C252 86 222 97 184 94C154 92 130 77 101 72C76 68 51 71 23 77Z" fill="#4E89AE" opacity="0.72"/>
+  <path d="M91 72C117 54 148 48 184 54C215 59 244 74 291 82C251 87 221 83 187 72C153 62 124 62 91 72Z" fill="#D8C95D"/>
+  <text x="28" y="98" fill="#4C5658" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700">HanGarden</text>
+  <text x="181" y="97" fill="#707A7D" font-family="Arial, sans-serif" font-size="10" letter-spacing="1.2">CONTENT MANAGEMENT PLATFORM</text>
+</svg>

@@ -48,6 +48,17 @@ export default function SectionRenderer({ section }: { section: Section }) {
           </div>
         </section>
       );
+    case 'deployment':
+      return (
+        <section className="preview-section deployment">
+          <h4>{section.title}</h4>
+          <ul>
+            {section.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      );
     default:
       return (
         <section className="preview-section fallback">

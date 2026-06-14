@@ -1,76 +1,53 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import type {
+  DeploymentUse,
+  EstimatedTime,
+  FeatureOption,
+  FieldLocation,
+  FocusTopic,
+  GenerateInput,
+  PageConfig,
+  PagePurpose,
+  PlantName,
+  Season,
+  TemplateType
+} from '../types/pageConfig';
 
-type PlantName = '구상나무' | '미선나무' | '동백나무' | '왕벚나무' | '금강초롱꽃' | '산수국';
-type TemplateType = 'intro' | 'storytelling' | 'quiz' | 'mission' | 'checklist';
-type PagePurpose = 'general' | 'education' | 'experience' | 'campaign' | 'promotion' | 'route';
-type Audience = 'children' | 'adults' | 'foreigners';
-type Language = 'ko' | 'en' | 'ja' | 'zh';
-type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'auto';
-type EstimatedTime = '10sec' | '30sec' | '1min' | '3min';
-type DeploymentUse = 'plantQr' | 'kiosk' | 'mobileCourse' | 'educationProgram' | 'sns';
-type FieldLocation = 'greenhouse' | 'garden' | 'outdoorGarden' | 'forestTrail' | 'park';
-type FocusTopic =
-  | 'appearance'
-  | 'ecology'
-  | 'nameOrigin'
-  | 'cultureHistory'
-  | 'usage'
-  | 'conservation'
-  | 'comparison'
-  | 'funFacts';
-type FeatureOption = 'voiceGuide' | 'qaAi' | 'similarPlantCards';
-
-interface GenerateInput {
-  plantName: PlantName;
-  template: TemplateType;
-  purpose: PagePurpose;
-  audience: Audience;
-  language: Language;
-  season: Season;
-  estimatedTime: EstimatedTime;
-  deploymentUse: DeploymentUse;
-  fieldLocation: FieldLocation;
-  focusTopics: FocusTopic[];
-  featureOptions: FeatureOption[];
-  extraRequest: string;
-}
-
-interface CliPayload {
-  jobId: string;
-  input: GenerateInput;
-}
-
-const plantFacts: Record<PlantName, { feature: string; habitat: string; risk: string }> = {
+const plantFacts: Record<PlantName, { feature: string; habitat: string; risk: string; sensory: string }> = {
   구상나무: {
     feature: '겨울에도 푸른 바늘잎과 단단한 솔방울',
     habitat: '우리나라 높은 산',
-    risk: '기후변화로 서식지가 줄어드는 일'
+    risk: '기후변화로 서식지가 줄어드는 일',
+    sensory: '짙은 초록 바늘잎과 위로 선 솔방울'
   },
   미선나무: {
     feature: '하얗고 향기로운 꽃과 부채 모양 열매',
     habitat: '충북의 햇빛 좋은 숲 가장자리',
-    risk: '자생지가 훼손되는 일'
+    risk: '자생지가 훼손되는 일',
+    sensory: '은은한 향기와 작은 부채 같은 열매'
   },
   동백나무: {
     feature: '겨울과 이른 봄에 피는 붉은 꽃',
     habitat: '남쪽 바닷가 숲',
-    risk: '따뜻한 숲 환경이 달라지는 일'
+    risk: '따뜻한 숲 환경이 달라지는 일',
+    sensory: '윤기 있는 잎과 바닥에 통째로 떨어지는 꽃'
   },
   왕벚나무: {
     feature: '봄을 알리는 풍성한 연분홍 꽃',
     habitat: '제주와 온대 숲',
-    risk: '병해충과 무분별한 훼손'
+    risk: '병해충과 무분별한 훼손',
+    sensory: '가지 끝에 모여 피는 연분홍 꽃송이'
   },
   금강초롱꽃: {
     feature: '종처럼 아래를 향해 피는 보랏빛 꽃',
     habitat: '깊은 산의 서늘한 숲',
-    risk: '희귀 식물을 함부로 채집하는 일'
+    risk: '희귀 식물을 함부로 채집하는 일',
+    sensory: '고개 숙인 종 모양 꽃과 차분한 보랏빛'
   },
   산수국: {
     feature: '가장자리 장식꽃과 계절에 따라 달라지는 꽃빛',
     habitat: '습기 있는 숲길과 계곡 주변',
-    risk: '건조해지는 숲 환경'
+    risk: '건조해지는 숲 환경',
+    sensory: '작은 꽃 주변을 둘러싼 장식꽃'
   }
 };
 
@@ -83,25 +60,12 @@ const templateTitles: Record<TemplateType, string> = {
 };
 
 const purposeTone: Record<PagePurpose, string> = {
-  general: '오늘의 식물 해설',
-  education: '배움이 있는 식물 탐구',
-  experience: '직접 해보는 현장 체험',
-  campaign: '함께 지키는 자연 캠페인',
-  promotion: '전시장에서 만나는 특별 해설',
-  route: '다음 장소로 이어지는 관람 동선'
-};
-
-const audienceGuide: Record<Audience, string> = {
-  children: '쉽고 짧은 문장으로 관찰 포인트를 알려줍니다.',
-  adults: '생태적 의미와 보전 가치를 차분히 전합니다.',
-  foreigners: '낯선 식물을 이해하기 쉽도록 맥락을 함께 설명합니다.'
-};
-
-const languageSuffix: Record<Language, string> = {
-  ko: '',
-  en: ' English preview',
-  ja: ' 日本語プレビュー',
-  zh: ' 中文预览'
+  general: '일반 관람객에게 식물의 특징을 쉽게 소개합니다.',
+  education: '학생과 어린이가 관찰하며 배울 수 있도록 문장을 짧게 구성합니다.',
+  experience: '현장에서 바로 따라 할 수 있는 미션과 관찰 행동을 중심에 둡니다.',
+  campaign: '생물다양성과 기후위기 메시지를 보전 가치와 함께 전합니다.',
+  promotion: '전시와 계절 행사의 매력을 짧고 선명하게 안내합니다.',
+  route: '다음 장소나 관련 식물로 자연스럽게 이동하도록 동선을 제안합니다.'
 };
 
 const seasonLabel: Record<Season, string> = {
@@ -110,6 +74,13 @@ const seasonLabel: Record<Season, string> = {
   autumn: '가을',
   winter: '겨울',
   auto: '오늘'
+};
+
+const timeLabel: Record<EstimatedTime, string> = {
+  '10sec': '10초',
+  '30sec': '30초',
+  '1min': '1분',
+  '3min': '3분'
 };
 
 const deploymentLabel: Record<DeploymentUse, string> = {
@@ -145,24 +116,19 @@ const featureLabel: Record<FeatureOption, string> = {
   similarPlantCards: '유사식물카드'
 };
 
-export function generatePageConfig(input: GenerateInput, jobId = `generated-${Date.now()}`) {
+export function generateStaticPageConfig(input: GenerateInput): PageConfig {
   const fact = plantFacts[input.plantName];
   const focusText = input.focusTopics.map((topic) => focusLabel[topic]).join(', ') || '생김새';
   const title =
     input.template === 'mission'
-      ? `${input.plantName}를 지켜라!${languageSuffix[input.language]}`
-      : `${templateTitles[input.template]} ${input.plantName}${languageSuffix[input.language]}`;
+      ? `${input.plantName}를 지켜라!`
+      : `${templateTitles[input.template]} ${input.plantName}`;
 
-  const sections = [
+  const sections: PageConfig['sections'] = [
     {
       type: 'hero',
       title: `${seasonLabel[input.season]}에 만나는 ${input.plantName}`,
-      body: `${input.plantName}는 ${fact.habitat}에서 자라며, ${fact.feature}이 특징입니다.`
-    },
-    {
-      type: 'info',
-      title: purposeTone[input.purpose],
-      body: audienceGuide[input.audience]
+      body: `${locationLabel[input.fieldLocation]}에서 ${fact.sensory}을 관찰해보세요. ${timeLabel[input.estimatedTime]} 안에 핵심만 이해할 수 있게 구성했습니다.`
     },
     {
       type: 'deployment',
@@ -175,6 +141,11 @@ export function generatePageConfig(input: GenerateInput, jobId = `generated-${Da
           ? `추가 기능: ${input.featureOptions.map((option) => featureLabel[option]).join(', ')}`
           : '추가 기능 없음'
       ]
+    },
+    {
+      type: 'info',
+      title: '콘텐츠 방향',
+      body: `${purposeTone[input.purpose]} ${input.plantName}는 ${fact.habitat}에서 자라며, ${fact.feature}이 특징입니다.`
     }
   ];
 
@@ -182,7 +153,7 @@ export function generatePageConfig(input: GenerateInput, jobId = `generated-${Da
     sections.push({
       type: 'story',
       title: `${input.plantName}의 이야기`,
-      body: `${input.plantName}는 ${fact.habitat}에서 오래 살아온 식물입니다. 지금은 ${fact.risk}을 조심해야 합니다.`
+      body: `${input.plantName}가 사는 환경이 달라지면 ${fact.risk}이 커질 수 있습니다. 오늘의 관찰은 이 식물을 오래 지키기 위한 첫 번째 기록입니다.`
     });
   }
 
@@ -199,7 +170,7 @@ export function generatePageConfig(input: GenerateInput, jobId = `generated-${Da
     sections.push({
       type: 'mission',
       title: '관찰 미션',
-      body: `${input.plantName} 주변에서 ${fact.feature}을 찾아보고, 훼손하지 않고 눈으로만 기록해보세요.`
+      body: `${input.plantName} 주변에서 ${fact.sensory}을 찾아보고, 훼손하지 않고 사진이나 메모로만 기록해보세요.`
     });
   }
 
@@ -230,11 +201,11 @@ export function generatePageConfig(input: GenerateInput, jobId = `generated-${Da
   }
 
   return {
-    id: jobId,
+    id: `static-${Date.now()}`,
     plantName: input.plantName,
     template: input.template,
     title,
-    subtitle: `${fact.risk}을 이해하는 ${input.estimatedTime} 해설 페이지`,
+    subtitle: `${fact.risk}을 이해하는 ${timeLabel[input.estimatedTime]} 맞춤형 해설 페이지`,
     audience: input.audience,
     language: input.language,
     season: input.season,
@@ -245,32 +216,3 @@ export function generatePageConfig(input: GenerateInput, jobId = `generated-${Da
     sections
   };
 }
-
-function readPayload(): CliPayload {
-  const markerIndex = process.argv.indexOf('--input-base64');
-  const encoded = markerIndex >= 0 ? process.argv[markerIndex + 1] : '';
-  if (!encoded) {
-    throw new Error('Missing --input-base64 payload');
-  }
-  return JSON.parse(Buffer.from(encoded, 'base64').toString('utf8')) as CliPayload;
-}
-
-async function main() {
-  const payload = readPayload();
-  const generatedDir = process.env.GENERATED_DIR
-    ? path.resolve(process.env.GENERATED_DIR)
-    : path.resolve(process.cwd(), 'generated');
-  const outputPath = path.join(generatedDir, 'page-config.json');
-
-  await fs.mkdir(generatedDir, { recursive: true });
-  const config = generatePageConfig(payload.input, payload.jobId);
-  await fs.writeFile(outputPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
-
-  console.log(`generate-page: ${payload.input.plantName} / ${payload.input.template}`);
-  console.log(`generate-page: wrote ${path.relative(process.cwd(), outputPath)}`);
-}
-
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});

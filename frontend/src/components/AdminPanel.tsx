@@ -27,7 +27,8 @@ const purposeOptions: SelectOption<GenerateInput['purpose']>[] = [
   { value: 'education', label: '교육' },
   { value: 'experience', label: '체험/미션' },
   { value: 'campaign', label: '캠페인' },
-  { value: 'promotion', label: '전시 홍보' }
+  { value: 'promotion', label: '전시 홍보' },
+  { value: 'route', label: '관람 동선 유도' }
 ];
 
 const audienceOptions: SelectOption<GenerateInput['audience']>[] = [
@@ -58,6 +59,39 @@ const timeOptions: SelectOption<GenerateInput['estimatedTime']>[] = [
   { value: '3min', label: '3분' }
 ];
 
+const deploymentOptions: SelectOption<GenerateInput['deploymentUse']>[] = [
+  { value: 'plantQr', label: '식물 표찰 QR' },
+  { value: 'kiosk', label: '전시관 키오스크' },
+  { value: 'mobileCourse', label: '모바일 관람 코스' },
+  { value: 'educationProgram', label: '교육 프로그램' },
+  { value: 'sns', label: 'SNS/홍보 페이지' }
+];
+
+const locationOptions: SelectOption<GenerateInput['fieldLocation']>[] = [
+  { value: 'greenhouse', label: '온실' },
+  { value: 'garden', label: '정원' },
+  { value: 'outdoorGarden', label: '야외 정원' },
+  { value: 'forestTrail', label: '숲길' },
+  { value: 'park', label: '공원' }
+];
+
+const focusTopicOptions: SelectOption<GenerateInput['focusTopics'][number]>[] = [
+  { value: 'appearance', label: '생김새' },
+  { value: 'ecology', label: '생태' },
+  { value: 'nameOrigin', label: '이름 유래' },
+  { value: 'cultureHistory', label: '문화/역사' },
+  { value: 'usage', label: '활용' },
+  { value: 'conservation', label: '보전 가치' },
+  { value: 'comparison', label: '비교 학습' },
+  { value: 'funFacts', label: '재미 요소' }
+];
+
+const featureOptions: SelectOption<GenerateInput['featureOptions'][number]>[] = [
+  { value: 'voiceGuide', label: '음성 해설' },
+  { value: 'qaAi', label: '질문답변 AI' },
+  { value: 'similarPlantCards', label: '유사식물카드' }
+];
+
 interface AdminPanelProps {
   input: GenerateInput;
   isLoading: boolean;
@@ -70,14 +104,30 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
     onChange({ ...input, [key]: value });
   };
 
+  const toggleListValue = <K extends 'focusTopics' | 'featureOptions'>(
+    key: K,
+    value: GenerateInput[K][number]
+  ) => {
+    const currentValues = input[key] as string[];
+    const nextValues = currentValues.includes(value)
+      ? currentValues.filter((currentValue) => currentValue !== value)
+      : [...currentValues, value];
+    onChange({ ...input, [key]: nextValues });
+  };
+
   return (
     <section className="admin-panel">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Generator</p>
-          <h2>생성 옵션</h2>
+          <h2>콘텐츠 생성 설정</h2>
         </div>
-        <span className={isLoading ? 'run-state active' : 'run-state'}>CLI</span>
+        <span className={isLoading ? 'run-state active' : 'run-state'}>AI Draft</span>
+      </div>
+
+      <div className="setting-group">
+        <p className="setting-title">기본 생성 설정</p>
+        <p className="setting-copy">대상 식물, 템플릿, 목적, 고객, 언어, 계절, 체험 시간을 기준으로 콘텐츠의 골격을 만듭니다.</p>
       </div>
 
       <div className="form-grid">
@@ -124,6 +174,40 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
           onChange={(value) => updateField('estimatedTime', value)}
         />
       </div>
+
+      <div className="setting-group">
+        <p className="setting-title">현장 배포 설정</p>
+        <p className="setting-copy">QR, 키오스크, 모바일 코스처럼 실제 설치 환경에 맞춰 페이지 밀도와 상호작용을 조정합니다.</p>
+      </div>
+
+      <div className="form-grid">
+        <SelectField
+          label="배포 용도"
+          value={input.deploymentUse}
+          options={deploymentOptions}
+          onChange={(value) => updateField('deploymentUse', value)}
+        />
+        <SelectField
+          label="실제 현장"
+          value={input.fieldLocation}
+          options={locationOptions}
+          onChange={(value) => updateField('fieldLocation', value)}
+        />
+      </div>
+
+      <CheckboxGroup
+        label="주요 설명 항목"
+        values={input.focusTopics}
+        options={focusTopicOptions}
+        onToggle={(value) => toggleListValue('focusTopics', value)}
+      />
+
+      <CheckboxGroup
+        label="추가 기능 옵션"
+        values={input.featureOptions}
+        options={featureOptions}
+        onToggle={(value) => toggleListValue('featureOptions', value)}
+      />
 
       <label className="field full">
         <span>추가 요청사항</span>
@@ -174,5 +258,35 @@ function SelectField<T extends string>({
         ))}
       </select>
     </label>
+  );
+}
+
+function CheckboxGroup<T extends string>({
+  label,
+  values,
+  options,
+  onToggle
+}: {
+  label: string;
+  values: T[];
+  options: SelectOption<T>[];
+  onToggle: (value: T) => void;
+}) {
+  return (
+    <fieldset className="checkbox-group">
+      <legend>{label}</legend>
+      <div className="chip-grid">
+        {options.map((option) => (
+          <label key={option.value} className="check-chip">
+            <input
+              type="checkbox"
+              checked={values.includes(option.value)}
+              onChange={() => onToggle(option.value)}
+            />
+            <span>{option.label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }
