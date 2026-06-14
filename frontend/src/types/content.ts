@@ -41,7 +41,7 @@ export type StoryScenario =
   | 'timeTravel'
   | 'climateSurvival'
   | 'nameSecret';
-export type LayoutId = 'default';
+export type LayoutId = 'generated' | 'default';
 export type ContentStatus = 'draft' | 'published';
 
 export interface PlantImage {
@@ -73,6 +73,7 @@ export interface PlantRecord {
 
 export interface ContentSettings {
   mode: CreationMode;
+  contentName: string;
   plantId: string;
   template: TemplateType;
   layoutId: LayoutId;

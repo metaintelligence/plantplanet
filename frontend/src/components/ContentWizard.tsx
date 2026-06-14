@@ -29,7 +29,7 @@ import type {
 interface ContentWizardProps {
   plants: PlantRecord[];
   editingContent: GeneratedContent | null;
-  onSave: (content: GeneratedContent) => void;
+  onGenerate: (content: GeneratedContent) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -39,7 +39,6 @@ const advancedSteps = [
   'plant',
   'focus',
   'distribution',
-  'layout',
   'intent',
   'audience',
   'field',
@@ -48,22 +47,39 @@ const advancedSteps = [
 
 type StepKey = (typeof generalSteps)[number] | (typeof advancedSteps)[number];
 
-export default function ContentWizard({ plants, editingContent, onSave, onCancel }: ContentWizardProps) {
+export default function ContentWizard({ plants, editingContent, onGenerate, onCancel }: ContentWizardProps) {
   const [draft, setDraft] = useState<ContentSettings>(() =>
-    editingContent?.settings ?? createDefaultSettings(plants[0]?.id ?? '')
+    createWizardSettings(editingContent, plants[0]?.id ?? '')
   );
   const [stepIndex, setStepIndex] = useState(0);
+  const [generationStatus, setGenerationStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contentNameTouched, setContentNameTouched] = useState(() =>
+    Boolean(editingContent?.settings.contentName || editingContent?.title)
+  );
 
   useEffect(() => {
-    const nextSettings = editingContent?.settings ?? createDefaultSettings(plants[0]?.id ?? '');
+    const nextSettings = createWizardSettings(editingContent, plants[0]?.id ?? '');
     setDraft(nextSettings);
     setStepIndex(0);
+    setGenerationStatus('');
+    setContentNameTouched(Boolean(editingContent?.settings.contentName || editingContent?.title));
   }, [editingContent, plants]);
 
   const steps = draft.mode === 'advanced' ? advancedSteps : generalSteps;
   const step = steps[stepIndex] as StepKey;
   const selectedPlant = plants.find((plant) => plant.id === draft.plantId) ?? plants[0];
   const settingsJson = useMemo(() => JSON.stringify(draft, null, 2), [draft]);
+  const canGenerate = Boolean(draft.contentName.trim()) && !isSubmitting;
+
+  useEffect(() => {
+    if (step !== 'review' || !selectedPlant || contentNameTouched) {
+      return;
+    }
+
+    const nextName = buildDefaultContentName(selectedPlant.koreanName, draft.template);
+    setDraft((current) => (current.contentName === nextName ? current : { ...current, contentName: nextName }));
+  }, [contentNameTouched, draft.template, selectedPlant, step]);
 
   const update = <K extends keyof ContentSettings>(key: K, value: ContentSettings[K]) => {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -91,11 +107,34 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!selectedPlant) {
       return;
     }
-    onSave(generateContentFromSettings(draft, selectedPlant, editingContent ?? undefined));
+
+    const contentName = draft.contentName.trim();
+    if (!contentName) {
+      setGenerationStatus('콘텐츠 이름을 입력해주세요.');
+      return;
+    }
+
+    const generationSettings: ContentSettings = {
+      ...draft,
+      contentName,
+      layoutId: 'generated'
+    };
+    const generatedContent = generateContentFromSettings(generationSettings, selectedPlant, editingContent ?? undefined);
+
+    setIsSubmitting(true);
+    setGenerationStatus('생성 설정 JSON을 준비했습니다.');
+
+    try {
+      await onGenerate(generatedContent);
+    } catch (error) {
+      setGenerationStatus(error instanceof Error ? error.message : '로컬 생성 서버 요청에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -104,7 +143,7 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
         <div>
           <p className="eyebrow">Content Wizard</p>
           <h1>{editingContent ? '콘텐츠 수정' : '콘텐츠 생성'}</h1>
-          <p>설정값을 단계적으로 수집한 뒤 JSON 문자열로 변환하고 기본 레이아웃 페이지를 생성합니다.</p>
+          <p>설정값을 단계적으로 수집한 뒤 JSON 문자열로 변환하고 Codex CLI가 실제 React 페이지를 생성합니다.</p>
         </div>
         <button className="secondary-button" type="button" onClick={onCancel}>
           콘텐츠 관리로 이동
@@ -126,8 +165,8 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
             <ChoiceGrid
               title="생성 방식 선택"
               items={[
-                { value: 'general', label: '일반 생성', description: '필수 설정만 입력하고 디폴트 레이아웃을 즉시 사용합니다.' },
-                { value: 'advanced', label: '고급 생성', description: '배포 용도, 레이아웃, 톤, 기능 옵션까지 절차적으로 설정합니다.' }
+                { value: 'general', label: '일반 생성', description: '필수 설정만 입력하고 생성형 레이아웃 작업을 요청합니다.' },
+                { value: 'advanced', label: '고급 생성', description: '배포 용도, 톤, 기능 옵션까지 절차적으로 설정해 페이지 생성을 요청합니다.' }
               ]}
               value={draft.mode}
               onChange={(value) => update('mode', value)}
@@ -170,8 +209,8 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
                   onChange={(value) => update('purpose', value)}
                 />
                 <div className="layout-choice selected">
-                  <strong>Default Layout</strong>
-                  <span>일반 생성은 기본 레이아웃을 즉시 사용합니다.</span>
+                  <strong>Codex Generated Layout</strong>
+                  <span>선택한 템플릿과 식물 데이터를 기반으로 새 React 페이지를 생성합니다.</span>
                 </div>
               </div>
             </section>
@@ -204,16 +243,6 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
                   onChange={(value) => update('deploymentUse', value)}
                 />
               </div>
-            </section>
-          )}
-
-          {step === 'layout' && (
-            <section>
-              <SectionTitle title="페이지 레이아웃 선택" description="현재 데모에서는 템플릿별 기본 레이아웃만 선택할 수 있습니다." />
-              <button className="layout-choice selected wide" type="button" onClick={() => update('layoutId', 'default')}>
-                <strong>Default Layout</strong>
-                <span>{labelOf(templateOptions, draft.template)} 템플릿의 기본 페이지 파일을 사용합니다.</span>
-              </button>
             </section>
           )}
 
@@ -317,12 +346,26 @@ export default function ContentWizard({ plants, editingContent, onSave, onCancel
           {step === 'review' && selectedPlant && (
             <section>
               <SectionTitle
-                title="설정 JSON 확인"
-                description={`${selectedPlant.koreanName} 콘텐츠 생성에 사용할 설정값입니다.`}
+                title="콘텐츠 이름과 설정 JSON 확인"
+                description={`${selectedPlant.koreanName} 콘텐츠 생성에 사용할 이름과 설정값입니다.`}
               />
+              <label className="field content-name-field">
+                <span>콘텐츠 이름</span>
+                <input
+                  required
+                  value={draft.contentName}
+                  placeholder={buildDefaultContentName(selectedPlant.koreanName, draft.template)}
+                  onChange={(event) => {
+                    setContentNameTouched(true);
+                    update('contentName', event.target.value);
+                  }}
+                />
+              </label>
               <pre className="json-preview">{settingsJson}</pre>
-              <button className="primary-button" type="button" onClick={handleGenerate}>
-                {editingContent ? '수정 내용 저장' : '콘텐츠 생성'}
+              {generationStatus && <div className="socket-status">{generationStatus}</div>}
+              <button className="primary-button" type="button" disabled={!canGenerate} onClick={handleGenerate}>
+                {isSubmitting && <span className="button-spinner" aria-hidden="true" />}
+                {isSubmitting ? '백그라운드 작업 시작 중' : editingContent ? '수정 내용 저장' : '콘텐츠 생성'}
               </button>
             </section>
           )}
@@ -450,7 +493,6 @@ function stepLabel(step: string) {
     template: '템플릿',
     focus: '설명 항목',
     distribution: '배포/템플릿',
-    layout: '레이아웃',
     intent: '목적/톤',
     audience: '대상/언어',
     timing: '계절/시간',
@@ -458,4 +500,32 @@ function stepLabel(step: string) {
     review: 'JSON 확인'
   };
   return labels[step] ?? step;
+}
+
+function createWizardSettings(editingContent: GeneratedContent | null, fallbackPlantId: string): ContentSettings {
+  const settings = editingContent?.settings ?? createDefaultSettings(fallbackPlantId);
+  return {
+    ...settings,
+    contentName: settings.contentName || editingContent?.title || '',
+    layoutId: 'generated'
+  };
+}
+
+function buildDefaultContentName(plantName: string, template: ContentSettings['template']) {
+  return `${plantName}_${labelOf(templateOptions, template)}_${formatRequestDate(new Date())}`;
+}
+
+function formatRequestDate(date: Date) {
+  const year = String(date.getFullYear()).slice(-2);
+  const month = padDatePart(date.getMonth() + 1);
+  const day = padDatePart(date.getDate());
+  const hours = padDatePart(date.getHours());
+  const minutes = padDatePart(date.getMinutes());
+  const seconds = padDatePart(date.getSeconds());
+
+  return `${year}${month}${day}_${hours}:${minutes}:${seconds}`;
+}
+
+function padDatePart(value: number) {
+  return String(value).padStart(2, '0');
 }

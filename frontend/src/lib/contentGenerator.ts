@@ -22,9 +22,10 @@ import type {
 export function createDefaultSettings(plantId = ''): ContentSettings {
   return {
     mode: 'general',
+    contentName: '',
     plantId,
     template: 'intro',
-    layoutId: 'default',
+    layoutId: 'generated',
     purpose: 'general',
     audience: ['adults'],
     languages: ['ko'],
@@ -66,6 +67,11 @@ export function generateContentFromSettings(
 }
 
 function buildTitle(settings: ContentSettings, plant: PlantRecord) {
+  const contentName = settings.contentName.trim();
+  if (contentName) {
+    return contentName;
+  }
+
   const templateLabel = labelOf(templateOptions, settings.template);
   if (settings.template === 'mission') {
     return `${plant.koreanName} 관찰 미션`;

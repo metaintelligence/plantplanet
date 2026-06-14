@@ -2,7 +2,7 @@
 
 React + Vite 기반의 수목원 식물해설 콘텐츠 관리 PoC입니다. 메인 화면은 HanGarden 프로젝트 소개와 콘텐츠 운영 현황을 보여주고, 햄버거 메뉴에서 콘텐츠 생성/관리와 전시 관리 화면으로 이동합니다.
 
-현재 백엔드 DB는 연결되어 있지 않으며, `frontend/public/mock_db.json`의 목업 식물 데이터를 사용합니다. 생성한 콘텐츠는 데모 목적상 쿠키에 저장되며, 저장소 구현은 `frontend/src/services/contentStore.ts`에 분리되어 있어 이후 Firebase 같은 서버 DB로 교체하기 쉽습니다.
+현재 실제 수목원 DB는 연결되어 있지 않으며, `frontend/public/mock_db.json`의 목업 식물 데이터를 사용합니다. 생성한 콘텐츠와 생성 작업 현황은 내 PC의 서버 파일(`generated/contents.json`, `generated/generation-jobs.json`)을 기준으로 동작합니다.
 
 ## 실행 방법
 
@@ -20,13 +20,51 @@ npm run dev
 npm run build
 ```
 
+## 다른 PC에서 접속하는 PoC 실행
+
+GitHub Pages 없이 내 PC가 프론트와 백엔드를 함께 서빙할 수 있습니다.
+
+```bash
+npm run build
+npm run start -w backend
+```
+
+백엔드는 기본적으로 `0.0.0.0:4000`에서 실행되며, 빌드된 React 앱과 WebSocket을 같은 포트로 제공합니다.
+
+```text
+http://내PC_IP:4000
+ws://내PC_IP:4000/ws/generate
+```
+
+같은 네트워크의 다른 PC에서 `http://내PC_IP:4000`으로 접속하면 생성 마법사 완료 시 설정 JSON과 콘텐츠 메타데이터가 `/ws/generate`로 전송됩니다. 서버는 콘텐츠를 `generated/contents.json`, 작업 현황을 `generated/generation-jobs.json`, 수신 원본을 `generated/layout-jobs/`에 저장한 뒤 `scripts/generate-layout-page.ts`를 실행해 `frontend/src/generated/layouts/`에 새 React 레이아웃 파일을 만들고 `generatedLayoutRegistry.tsx`를 갱신합니다. 이후 `npm run build -w frontend`가 통과하면 클라이언트에 완료 ACK를 보냅니다.
+
+레이아웃 생성 프롬프트는 공용 프롬프트와 템플릿별 추가 프롬프트로 분리되어 있습니다.
+
+```text
+scripts/prompts/generate-layout-page.prompt.md        공용 계약/품질 기준
+scripts/prompts/templates/intro.prompt.md             식물 소개 특화 지시
+scripts/prompts/templates/storytelling.prompt.md      스토리텔링 특화 지시
+scripts/prompts/templates/quiz.prompt.md              퀴즈 특화 지시
+scripts/prompts/templates/mission.prompt.md           미션 특화 지시
+scripts/prompts/templates/checklist.prompt.md         체크리스트 특화 지시
+```
+
+프롬프트 템플릿에서는 `{{componentName}}`, `{{targetFile}}`, `{{template}}`, `{{templatePrompt}}`, `{{mockDbSummary}}`, `{{settingsJsonArray}}`, `{{settingsJson}}` 플레이스홀더를 사용할 수 있습니다.
+
+선택 환경변수:
+
+- `CODEX_LAYOUT_PROMPT_PATH`: 기본 프롬프트 파일 대신 사용할 프롬프트 경로
+- `CODEX_LAYOUT_TEMPLATE_PROMPT_DIR`: 템플릿별 프롬프트 디렉터리 경로
+- `CODEX_LAYOUT_MODEL`: `codex exec`에 전달할 모델명
+- `CODEX_LAYOUT_TIMEOUT_MS`: Codex CLI 실행 타임아웃. 기본값 `300000`
+
 ## 주요 기능
 
 - HanGarden 콘텐츠 관리자 메인 페이지
 - 콘텐츠 생성 마법사: 일반 생성 / 고급 생성, 대상 식물 선택, Concept.md 기반 설정 절차
-- 템플릿별 기본 레이아웃 페이지: 소개, 스토리텔링, 퀴즈, 미션, 체크리스트
+- Codex CLI 기반 템플릿별 React 레이아웃 생성: 소개, 스토리텔링, 퀴즈, 미션, 체크리스트
 - 생성 콘텐츠 별도 링크: `#/content/{id}`
-- 쿠키 기반 콘텐츠 CRUD
+- 로컬 서버 파일 기반 콘텐츠 CRUD
 - 전시 관리 빈 페이지: 국립백두대간수목원, 국립세종수목원, 국립한국자생식물원, 국립정원문화원
 
 ## GitHub Pages 배포

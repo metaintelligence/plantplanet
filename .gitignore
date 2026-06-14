@@ -2,6 +2,9 @@ node_modules/
 frontend/dist/
 backend/dist/
 frontend/tsconfig.tsbuildinfo
+generated/layout-jobs/
+generated/contents.json
+generated/generation-jobs.json
 .env
 .DS_Store
 npm-debug.log*

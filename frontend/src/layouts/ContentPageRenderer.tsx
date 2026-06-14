@@ -1,4 +1,5 @@
 import type { GeneratedContent, PlantRecord } from '../types/content';
+import { generatedLayoutRegistry } from '../generated/generatedLayoutRegistry';
 import DefaultLayoutChecklistPage from './DefaultLayoutChecklistPage';
 import DefaultLayoutIntroPage from './DefaultLayoutIntroPage';
 import DefaultLayoutMissionPage from './DefaultLayoutMissionPage';
@@ -12,6 +13,11 @@ export default function ContentPageRenderer({
   content: GeneratedContent;
   plant: PlantRecord;
 }) {
+  const GeneratedLayout = generatedLayoutRegistry[content.id];
+  if (GeneratedLayout) {
+    return <GeneratedLayout content={content} plant={plant} />;
+  }
+
   switch (content.settings.template) {
     case 'storytelling':
       return <DefaultLayoutStorytellingPage content={content} plant={plant} />;

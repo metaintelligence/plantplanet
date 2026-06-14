@@ -5,8 +5,15 @@ import ContentManager from './components/ContentManager';
 import ContentWizard from './components/ContentWizard';
 import ExhibitionPage from './components/ExhibitionPage';
 import HomeDashboard from './components/HomeDashboard';
-import { cookieContentStore } from './services/contentStore';
+import { startLayoutGenerationRequest } from './services/layoutGenerationClient';
+import {
+  deleteContentFromServer,
+  fetchContents,
+  fetchGenerationJobs,
+  updateContentStatus
+} from './services/serverDataClient';
 import type { ContentStatus, GeneratedContent, MockDatabase, PlantRecord } from './types/content';
+import type { LayoutGenerationJob } from './types/generationJob';
 
 type Route =
   | { name: 'home'; path: '/' }
@@ -15,13 +22,23 @@ type Route =
   | { name: 'content'; path: string; id: string }
   | { name: 'exhibition'; path: string; id: string };
 
+interface ToastMessage {
+  id: string;
+  title: string;
+  message: string;
+  tone: 'info' | 'success' | 'error';
+}
+
 export default function App() {
   const [route, setRoute] = useState<Route>(() => parseHashRoute());
   const [menuOpen, setMenuOpen] = useState(false);
   const [plants, setPlants] = useState<PlantRecord[]>([]);
-  const [contents, setContents] = useState<GeneratedContent[]>(() => cookieContentStore.list());
+  const [contents, setContents] = useState<GeneratedContent[]>([]);
+  const [generationJobs, setGenerationJobs] = useState<LayoutGenerationJob[]>([]);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [editingContent, setEditingContent] = useState<GeneratedContent | null>(null);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [contentError, setContentError] = useState<string | null>(null);
 
   useEffect(() => {
     const onHashChange = () => setRoute(parseHashRoute());
@@ -46,6 +63,14 @@ export default function App() {
       });
   }, []);
 
+  useEffect(() => {
+    void refreshServerData();
+    const intervalId = window.setInterval(() => {
+      void refreshServerData();
+    }, 5000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   const navigate = (path: string) => {
     if (path === '/create') {
       setEditingContent(null);
@@ -59,30 +84,147 @@ export default function App() {
     window.location.hash = hash;
   };
 
-  const saveContent = (content: GeneratedContent) => {
-    setContents(cookieContentStore.save(content));
-    setEditingContent(null);
-    navigate(`/content/${content.id}`);
+  const upsertGenerationJob = (job: LayoutGenerationJob) => {
+    setGenerationJobs((current) => [job, ...current.filter((item) => item.id !== job.id)]);
   };
 
-  const deleteContent = (contentId: string) => {
+  const patchGenerationJob = (jobId: string, patch: Partial<LayoutGenerationJob>) => {
+    setGenerationJobs((current) =>
+      current.map((job) =>
+        job.id === jobId
+          ? {
+              ...job,
+              ...patch,
+              updatedAt: patch.updatedAt ?? new Date().toISOString()
+            }
+          : job
+      )
+    );
+  };
+
+  const refreshServerData = async () => {
+    try {
+      const [nextContents, nextJobs] = await Promise.all([fetchContents(), fetchGenerationJobs()]);
+      setContents(nextContents);
+      setGenerationJobs(nextJobs);
+      setContentError(null);
+    } catch (error) {
+      setContentError(error instanceof Error ? error.message : '서버 파일 데이터를 불러오지 못했습니다.');
+    }
+  };
+
+  const pushToast = (toast: Omit<ToastMessage, 'id'>) => {
+    const id = crypto.randomUUID?.() ?? `toast-${Date.now()}`;
+    setToasts((current) => [{ id, ...toast }, ...current].slice(0, 4));
+    window.setTimeout(() => {
+      setToasts((current) => current.filter((item) => item.id !== id));
+    }, 5200);
+  };
+
+  const startContentGeneration = async (content: GeneratedContent) => {
+    const plant = plants.find((item) => item.id === content.settings.plantId);
+    const now = new Date().toISOString();
+    const job: LayoutGenerationJob = {
+      id: content.id,
+      contentId: content.id,
+      contentTitle: content.title,
+      plantName: plant?.koreanName ?? content.settings.plantId,
+      template: content.settings.template,
+      routePath: content.routePath.replace(/^#/, ''),
+      status: 'queued',
+      message: '로컬 생성 서버 연결을 준비하고 있습니다.',
+      createdAt: now,
+      updatedAt: now
+    };
+
+    try {
+      const handle = await startLayoutGenerationRequest(content, {
+        plantName: plant?.koreanName,
+        onStatus: (message) =>
+          patchGenerationJob(content.id, {
+            status: 'running',
+            message
+          })
+      });
+
+      upsertGenerationJob(job);
+      await refreshServerData();
+      setEditingContent(null);
+      patchGenerationJob(handle.jobId, {
+        status: 'running',
+        message: '백그라운드에서 페이지 생성 작업이 시작되었습니다.'
+      });
+      pushToast({
+        tone: 'info',
+        title: '생성 작업 시작',
+        message: `${content.title} 페이지를 백그라운드에서 생성하고 있습니다.`
+      });
+      navigate('/');
+
+      void handle.done
+        .then((message) => {
+          patchGenerationJob(handle.jobId, {
+            status: 'completed',
+            message: message.message ?? '페이지 생성과 빌드가 완료되었습니다.',
+            completedAt: new Date().toISOString()
+          });
+          void refreshServerData();
+          pushToast({
+            tone: 'success',
+            title: '페이지 생성 완료',
+            message: `${content.title} 생성이 완료되었습니다. 최신 페이지를 반영하기 위해 곧 새로고침합니다.`
+          });
+          window.setTimeout(() => window.location.reload(), 2200);
+        })
+        .catch((error) => {
+          const message = error instanceof Error ? error.message : '페이지 생성 작업에 실패했습니다.';
+          const timedOut = message.includes('5분') || message.includes('timed out');
+          patchGenerationJob(handle.jobId, {
+            status: timedOut ? 'timeout' : 'failed',
+            message
+          });
+          void refreshServerData();
+          pushToast({
+            tone: 'error',
+            title: timedOut ? '생성 시간 초과' : '생성 실패',
+            message
+          });
+        });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const deleteContent = async (contentId: string) => {
     const confirmed = window.confirm('이 콘텐츠를 삭제할까요?');
     if (!confirmed) {
       return;
     }
-    setContents(cookieContentStore.remove(contentId));
+    try {
+      setContents(await deleteContentFromServer(contentId));
+    } catch (error) {
+      pushToast({
+        tone: 'error',
+        title: '삭제 실패',
+        message: error instanceof Error ? error.message : '콘텐츠 삭제에 실패했습니다.'
+      });
+      return;
+    }
     if (route.name === 'content' && route.id === contentId) {
       navigate('/manage');
     }
   };
 
-  const changeStatus = (content: GeneratedContent, status: ContentStatus) => {
-    const updated: GeneratedContent = {
-      ...content,
-      status,
-      updatedAt: new Date().toISOString()
-    };
-    setContents(cookieContentStore.save(updated));
+  const changeStatus = async (content: GeneratedContent, status: ContentStatus) => {
+    try {
+      setContents(await updateContentStatus(content.id, status));
+    } catch (error) {
+      pushToast({
+        tone: 'error',
+        title: '상태 변경 실패',
+        message: error instanceof Error ? error.message : '콘텐츠 상태를 변경하지 못했습니다.'
+      });
+    }
   };
 
   const startEdit = (content: GeneratedContent) => {
@@ -110,7 +252,9 @@ export default function App() {
       onNavigate={navigate}
     >
       {dbError && <div className="error-banner">{dbError}</div>}
+      {contentError && <div className="error-banner">{contentError}</div>}
       {renderRoute()}
+      <ToastViewport toasts={toasts} onDismiss={(id) => setToasts((current) => current.filter((toast) => toast.id !== id))} />
     </AppShell>
   );
 
@@ -129,7 +273,7 @@ export default function App() {
           <ContentWizard
             plants={plants}
             editingContent={editingContent}
-            onSave={saveContent}
+            onGenerate={startContentGeneration}
             onCancel={() => {
               setEditingContent(null);
               navigate('/manage');
@@ -161,9 +305,32 @@ export default function App() {
         return <ExhibitionPage siteId={route.id} />;
       case 'home':
       default:
-        return <HomeDashboard plants={plants} contents={contents} onNavigate={navigate} />;
+        return <HomeDashboard plants={plants} contents={contents} generationJobs={generationJobs} onNavigate={navigate} />;
     }
   }
+}
+
+function ToastViewport({
+  toasts,
+  onDismiss
+}: {
+  toasts: ToastMessage[];
+  onDismiss: (id: string) => void;
+}) {
+  if (toasts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="toast-stack" role="status" aria-live="polite">
+      {toasts.map((toast) => (
+        <button className={`toast ${toast.tone}`} key={toast.id} type="button" onClick={() => onDismiss(toast.id)}>
+          <strong>{toast.title}</strong>
+          <span>{toast.message}</span>
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function parseHashRoute(): Route {

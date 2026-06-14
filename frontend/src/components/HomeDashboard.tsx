@@ -1,13 +1,16 @@
 import type { GeneratedContent, PlantRecord } from '../types/content';
+import type { LayoutGenerationJob, LayoutGenerationJobStatus } from '../types/generationJob';
 
 interface HomeDashboardProps {
   plants: PlantRecord[];
   contents: GeneratedContent[];
+  generationJobs: LayoutGenerationJob[];
   onNavigate: (path: string) => void;
 }
 
-export default function HomeDashboard({ plants, contents, onNavigate }: HomeDashboardProps) {
+export default function HomeDashboard({ plants, contents, generationJobs, onNavigate }: HomeDashboardProps) {
   const publishedCount = contents.filter((content) => content.status === 'published').length;
+  const activeJobCount = generationJobs.filter((job) => job.status === 'queued' || job.status === 'running').length;
 
   return (
     <div className="dashboard-page">
@@ -34,7 +37,7 @@ export default function HomeDashboard({ plants, contents, onNavigate }: HomeDash
         <Metric label="목업 식물 데이터" value={`${plants.length}`} />
         <Metric label="생성 콘텐츠" value={`${contents.length}`} />
         <Metric label="게시 콘텐츠" value={`${publishedCount}`} />
-        <Metric label="전시 관리 공간" value="4" />
+        <Metric label="진행 중 요청" value={`${activeJobCount}`} />
       </section>
 
       <section className="two-column">
@@ -82,6 +85,45 @@ export default function HomeDashboard({ plants, contents, onNavigate }: HomeDash
           )}
         </div>
       </section>
+
+      <section className="panel job-panel">
+        <div className="panel-heading compact">
+          <div>
+            <p className="eyebrow">Generation Queue</p>
+            <h2>요청 작업 현황</h2>
+          </div>
+          <button className="secondary-button" type="button" onClick={() => onNavigate('/create')}>
+            새 요청
+          </button>
+        </div>
+        {generationJobs.length === 0 ? (
+          <div className="empty-state">
+            <strong>아직 요청된 생성 작업이 없습니다.</strong>
+            <span>콘텐츠 생성 마법사를 완료하면 이곳에서 작업 상태를 확인할 수 있습니다.</span>
+          </div>
+        ) : (
+          <div className="job-list">
+            {generationJobs.slice(0, 8).map((job) => (
+              <article className="job-row" key={job.id}>
+                <div className="job-row-main">
+                  <div className="job-title-line">
+                    {(job.status === 'queued' || job.status === 'running') && <span className="inline-spinner" />}
+                    <strong>{job.contentTitle}</strong>
+                    <StatusBadge status={job.status} />
+                  </div>
+                  <p>{job.message}</p>
+                  <span>
+                    {job.plantName} · {job.template} · {formatTime(job.updatedAt)}
+                  </span>
+                </div>
+                <button className="secondary-button" type="button" onClick={() => onNavigate(normalizeRoute(job.routePath))}>
+                  페이지 열기
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
@@ -93,4 +135,32 @@ function Metric({ label, value }: { label: string; value: string }) {
       <strong>{value}</strong>
     </article>
   );
+}
+
+function normalizeRoute(routePath: string) {
+  return routePath.replace(/^#/, '') || '/';
+}
+
+function StatusBadge({ status }: { status: LayoutGenerationJobStatus }) {
+  const labels: Record<LayoutGenerationJobStatus, string> = {
+    queued: '대기',
+    running: '생성 중',
+    completed: '완료',
+    failed: '실패',
+    timeout: '시간 초과'
+  };
+
+  return <span className={`job-status ${status}`}>{labels[status]}</span>;
+}
+
+function formatTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
 }
