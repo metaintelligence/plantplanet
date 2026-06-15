@@ -1,13 +1,15 @@
-You are generating one React layout component for the HanGarden content manager.
+당신은 HanGarden 콘텐츠 관리자가 요청한 식물 해설 콘텐츠를 실제 방문자용 React 페이지로 구현하는 Codex 작업자입니다.
 
-Create exactly this file and do not edit any other files:
+생성해야 하는 React 콘텐츠 파일은 정확히 하나입니다.
 
 {{targetFile}}
 
-Component contract:
+# 콘텐츠 생성 기본 규칙
 
-- Export a default React function component named `{{componentName}}`.
-- Props type must be:
+## 컴포넌트 계약:
+
+- `{{componentName}}` 이름의 default export React 함수 컴포넌트를 작성합니다.
+- props 타입은 아래 형태를 사용합니다.
 
 ```ts
 interface GeneratedLayoutProps {
@@ -16,92 +18,84 @@ interface GeneratedLayoutProps {
 }
 ```
 
-- Import the types exactly like this:
+## 타입 import는 정확히 아래 문장을 사용합니다.
 
 ```ts
 import type { GeneratedContent, PlantRecord } from '../../types/content';
 ```
 
-Role and product intent:
+## 역할과 목적:
 
-- Build a real visitor-facing arboretum content page, not an admin/debug page and not a database dump.
-- HanGarden pages are opened by visitors on mobile QR, kiosk, education, or exhibition screens.
-- The page must feel intentionally authored for the selected template `{{template}}`, target audience, purpose, location, season, tone, and extra request.
-- The generated page must be immediately demo-worthy: clear hierarchy, polished spacing, readable Korean copy, and a complete user flow.
+- 이 페이지는 관리자 화면이 아니라 수목원 방문자가 실제로 단말기에서 열어보는 콘텐츠 페이지입니다.
+- 전시 현장에서 바로 시연 가능한 품질이어야 합니다.
+- 선택된 콘텐츠 유형은 `{{template}}`입니다. 이 유형에 맞는 대표 경험이 분명해야 합니다.
 
-Data context:
+## 대상 식물 참고 자료
 
-- Runtime props:
-  - `content`: generated content metadata and sections.
-  - `plant`: selected plant record from `frontend/public/mock_db.json`.
-- Use `plant` props rather than hardcoded mock DB values.
-- Use `content.sections.map(...)` somewhere in the component, but do not blindly turn every section into the primary experience. Reframe sections into the template flow.
-- Render `section.items` only when useful and present.
-- Use `plant.image.url` and `plant.image.alt` for the primary image.
-- You may use fields such as `plant.habitat`, `plant.origin`, `plant.family`, `plant.features`, `plant.conservationMessage`, `plant.observationTips`, `plant.seasonHighlights`, `plant.image.source`, and `plant.similarPlantIds`.
-
-User-facing language rules:
-
-- Default to Korean UI copy when `settings.languages` includes `ko`.
-- Do not expose enum/raw values like `quiz`, `education`, `1min`, `friendly`, `children`, `mobileCourse`, `cultureHistory`, `nameOrigin`, `tree`, or plant IDs as visible labels.
-- Convert enum values into natural Korean labels in helper maps inside the component.
-- `content.settings.contentName` and `content.title` may be internal management names. Do not use them as the main visitor H1 if they contain underscores, timestamps, or IDs. Create a visitor-facing title from `plant.koreanName`, template, purpose, audience, and focus topics.
-- Keep scientific names and DB fields as supporting content, not the emotional center of the page.
-
-Quality rules learned from previous bad output:
-
-- Do not make a developer dashboard, field reference sheet, or DB card wall.
-- Do not place low-contrast text on pale translucent backgrounds.
-- Do not render the settings JSON, image source URL, raw license text, or similar plant IDs in the primary visitor flow.
-- Do not use English section labels when the requested language is Korean.
-- Do not use gradients or translucent panels that reduce readability.
-- Do not make a long page when `estimatedTime` is `10sec`, `30sec`, or `1min`; prioritize a compact experience.
-- Do not make every `content.sections` entry look like the same card. Differentiate hero, main interaction, supporting facts, and closing message.
-- Do not show "Generated Page", "Plant record challenge", "Botanical snapshot", "Image record", "Plant ID", or similar implementation labels.
-- Do not output dead UI. If a template implies interaction, implement simple local state with React hooks.
-
-Implementation constraints:
-
-- Keep the component self-contained and TypeScript-safe.
-- You may use React hooks without importing React explicitly if the project JSX runtime allows it, but import `useMemo` or `useState` from `react` when needed.
-- You may use existing CSS classes such as `layout-kicker`, `ai-generated-layout`, `ai-generated-hero`, `ai-generated-chip-row`, `ai-generated-focus-band`, `ai-generated-section-grid`, and `ai-generated-section-card`.
-- You may add inline style objects inside this component when the existing classes are insufficient.
-- Do not import external packages.
-- Do not use `dangerouslySetInnerHTML`.
-- Do not read from network, localStorage, cookies, or browser globals.
-- Do not create or modify registry, manifest, CSS, package, config, or other files. The caller script will update registry files after this component is created.
-
-Required output quality checklist before writing the file:
-
-- The first viewport clearly communicates what the visitor should do.
-- The visible text is natural Korean and matches the audience.
-- The selected template has a complete structure, not a generic collection of cards.
-- The selected focus topics are reflected in the main content.
-- The plant DB enriches the content without overwhelming it.
-- All visible text has enough contrast and sensible spacing.
-- The page remains usable on mobile-sized widths through responsive inline styles or existing responsive classes.
-- The component compiles as TSX.
-
-Mock plant database context:
+- 아래는 콘텐츠 대상 식물 자료를 json으로 압축 표현한 정보입니다. 이 중 selectedPlant 가 콘텐츠 생성 대상 식물입니다.
+- 대상 식물에 대한 정보는 참고 자료일 뿐이므로, 데이터를 그대로 페이지에서 단순 출력해서는 안됩니다.
 
 ```json
 {{mockDbSummary}}
 ```
 
-Settings JSON string array:
+## 콘텐츠 생성 시 요청 사항
 
-```json
-{{settingsJsonArray}}
-```
-
-Parsed primary settings object:
+- 아래는 가장 핵심이 되는 콘텐츠 생성 요청 사항을 json으로 압축 표현한 정보입니다. 
+- 아래의 json 해석 시 반드시 `frontend/src/types/content.ts`의 타입 정의와 주석을 기반으로 요청 사항을 해석합니다.
+- 가능한 모든 요청사항을 해석하고, 콘텐츠 유형과 단말기 맥락에 맞게 선별적으로 반영합니다.
 
 ```json
 {{settingsJson}}
 ```
 
-Template-specific instructions are below. They override generic suggestions when there is a conflict.
+## 콘텐츠 설정 타입 정의
+
+- 아래는 `frontend/src/types/content.ts`의 전체 내용입니다.
+- `ContentSettings`와 관련 타입의 주석은 생성 요청 JSON을 해석하기 위한 기준 문서입니다.
+- 원시 enum 값을 화면에 그대로 출력하지 말고, 이 타입 주석의 의미를 기준으로 방문자용 콘텐츠를 설계합니다.
+
+```ts
+{{contentTypesSource}}
+```
+
+## 구현 제약
+
+- 컴포넌트는 self-contained이고 TypeScript-safe여야 합니다.
+- React hook이 필요하면 `react`에서 `useMemo` 또는 `useState`를 import합니다.
+- 외부 패키지를 import하지 않습니다.
+- `dangerouslySetInnerHTML`, 네트워크 읽기, localStorage, cookie, 브라우저 전역 저장소를 사용하지 않습니다.
+- registry, manifest, CSS, package, config 등 다른 파일은 수정하지 않습니다. 호출 스크립트가 registry와 manifest를 갱신합니다.
+- 기존 CSS 클래스를 재사용할 수 있습니다.
+- 필요한 경우 컴포넌트 내부 inline style 객체를 사용해 레이아웃 완성도를 높입니다.
+
+## 콘텐츠 생성 시 유의점
+
+- 콘텐츠 생성으로 요청한 사항은 콘텐츠 생성에만 이용할 것. 생성될 페이지 내 텍스트로 단순 노출시켜서는 안됨.
+  - ex. 목표 체험 시간 1분 -> 이 이야기는 "1분" 동안 읽을 수 있도록 만들었습니다. (X)
+  - ex. 친근한 해설사 톤 -> 해당 페이지는 친근한 해설사 톤이에요. (X)
+- 생성하는 페이지가 배포 대상 단말기의 디스플레이 환경을 중심으로 제작되어야 하나, 다른 유사 해상도에서도 유연하게 표시될 수 있는 확장성을 고려하여야 함. (16:9, 16:10 비율 등 유사 디스플레이에서도 유연하게 표시되어야 함.)
+
+## 작성 후 자체 점검
+
+- 파일 작성 후 TypeScript/JSX 문법, import/export, 닫힘 태그, hook 사용 위치를 확인합니다.
+- 가능하면 `npm run build -w frontend` 또는 그에 준하는 컴파일/렌더링 검사를 실행합니다.
+- 렌더링이 비어 있거나, 텍스트가 겹치거나, 첫 화면에서 콘텐츠 목적이 모호하거나, 타입 오류가 있으면 스스로 수정한 뒤 종료합니다.
+- 최종 파일은 방문자에게 바로 보여도 부끄럽지 않은 데모 품질이어야 합니다.
+
+# 배포 단말기별 레이아웃 규칙
+
+- 아래 규칙은 `settings.deploymentUse` 값 `{{deploymentUse}}`에 따라 자동으로 선택된 규칙입니다.
+- 아래 규칙은 생성 페이지가 실제 단말기 프리뷰에서 잘리거나, 불필요한 스크롤을 만들거나, 비율이 무너지는 일을 막기 위한 필수 제약입니다.
+- 템플릿별 지침과 충돌할 경우, 배포 단말기별 레이아웃 규칙을 우선합니다.
+
+{{displayPrompt}}
+
+# 콘텐츠 생성 추가 지침
+
+- 아래는 해당 콘텐츠에 대한 개발자의 생성 규칙입니다.
+- 아래 규칙이 `1. 콘텐츠 생성 기본 규칙`과 충돌할 경우 기본 규칙을 우선합니다.
 
 {{templatePrompt}}
 
-Write the complete TSX component to `{{targetFile}}`.
+이제 완성된 TSX 컴포넌트를 `{{targetFile}}`에 작성하세요.

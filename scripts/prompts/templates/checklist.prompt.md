@@ -1,25 +1,32 @@
-# Template-specific prompt: checklist
+# 콘텐츠 유형별 프롬프트: 관찰 체크리스트
 
-Generate an observation checklist page.
+방문자가 식물을 순서대로 살펴보며 발견 항목을 체크하는 페이지를 만드세요.
 
-Required experience:
+필수 경험:
 
-- The page should help visitors inspect the plant step by step.
-- Use simple checklist items based on `plant.observationTips`, `plant.features`, and seasonal highlight.
-- Use `useState` to allow checklist items to be checked off.
-- Include a small progress indicator such as completed count.
-- For `estimatedTime` of `1min` or less, use 4 to 5 checklist items maximum.
+- 핵심 경험은 단계별 관찰 체크리스트입니다.
+- `deploymentUse`가 `staticPoster`가 아니라면 `useState`를 사용해 체크 상태와 완료 개수를 보여줍니다.
+- `deploymentUse`가 `staticPoster`라면 체크 상호작용 없이 관찰 항목과 설명이 한 장의 포스터처럼 읽히게 구성합니다.
+- 체크 항목은 `plant.observationTips`, `plant.features`, 현재 계절 하이라이트, `focusTopics`, `extraRequest`에서 도출합니다.
+- `estimatedTime`이 `1min` 이하이면 체크 항목은 4~5개 이하로 제한합니다.
+- 완료 상태가 시각적으로 분명해야 합니다.
 
-Layout requirements:
+권장 구조:
 
-- Hero: Korean checklist title, plant image, and short instruction.
-- Checklist: large readable rows with checkbox controls and short labels.
-- Detail cards: 2 to 3 supporting facts that help complete the checklist.
-- Closing: one reflection prompt or conservation message.
+- 첫 화면: 한국어 체크리스트 제목, 식물 이미지, 짧은 안내문, 진행률.
+- 체크리스트: 큰 행과 충분한 터치 영역을 가진 체크 항목.
+- 도움 카드: 체크 항목을 이해하는 데 필요한 사실 2~3개.
+- 마무리: 한 문장 반성 질문 또는 보전 메시지.
 
-Bad-output avoidance:
+단말기별 주의:
 
-- Do not make a static bullet list when the template is checklist.
-- Do not show raw DB IDs, raw enum labels, or settings JSON.
-- Do not create tiny checkboxes or cramped text.
-- Do not ask visitors to physically handle or damage the plant.
+- `kiosk`: 한 화면에서 대부분의 체크 항목과 진행률이 보여야 합니다.
+- `mobile`: 세로 스크롤을 허용하되 각 항목을 손가락으로 누르기 쉽게 만듭니다.
+- `staticPoster`: 상호작용을 빼고 관찰 순서가 분명한 포스터형 레이아웃으로 만듭니다.
+
+피해야 할 출력:
+
+- 정적인 bullet list만 만들고 체크 경험을 없애지 않습니다. 단, 정적 포스터는 예외입니다.
+- 작은 기본 체크박스만 던져두지 않습니다.
+- 원시 DB ID, enum 값, 설정 JSON을 보여주지 않습니다.
+- 식물을 만지거나 훼손하는 관찰 행동을 요청하지 않습니다.

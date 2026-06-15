@@ -19,11 +19,9 @@ export type Language = 'ko' | 'en' | 'ja' | 'zh';
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'auto';
 export type EstimatedTime = '10sec' | '30sec' | '1min' | '3min';
 export type DeploymentUse =
-  | 'plantQr'
   | 'kiosk'
-  | 'mobileCourse'
-  | 'educationProgram'
-  | 'sns';
+  | 'mobile'
+  | 'staticPoster';
 export type FieldLocation = 'greenhouse' | 'garden' | 'outdoorGarden' | 'forestTrail' | 'park';
 export type FocusTopic =
   | 'appearance'

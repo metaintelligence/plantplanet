@@ -1,6 +1,7 @@
 import type { TemplateType } from './content';
 
-export type LayoutGenerationJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'timeout';
+export type LayoutGenerationJobStatus = 'queued' | 'running' | 'revising' | 'completed' | 'failed' | 'timeout';
+export type LayoutGenerationJobOperation = 'generate' | 'revise';
 
 export interface LayoutGenerationJob {
   id: string;
@@ -10,8 +11,10 @@ export interface LayoutGenerationJob {
   template: TemplateType;
   routePath: string;
   status: LayoutGenerationJobStatus;
+  operation?: LayoutGenerationJobOperation;
   message: string;
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
+  targetFile?: string;
 }

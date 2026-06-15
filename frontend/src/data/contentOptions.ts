@@ -10,7 +10,8 @@ import type {
   Season,
   StoryScenario,
   TemplateType,
-  Tone
+  Tone,
+  LayoutId
 } from '../types/content';
 
 export interface Option<T extends string> {
@@ -65,11 +66,38 @@ export const estimatedTimeOptions: Option<EstimatedTime>[] = [
 ];
 
 export const deploymentOptions: Option<DeploymentUse>[] = [
-  { value: 'plantQr', label: '식물 표찰 QR' },
-  { value: 'kiosk', label: '전시관 키오스크' },
-  { value: 'mobileCourse', label: '모바일 관람 코스' },
-  { value: 'educationProgram', label: '교육 프로그램' },
-  { value: 'sns', label: 'SNS/홍보 페이지' }
+  {
+    value: 'kiosk',
+    label: '키오스크',
+    description: '상호작용 가능한 FHD 전시 디스플레이입니다. 스크롤 없이 한 화면 안에서 경험해야 합니다.'
+  },
+  {
+    value: 'mobile',
+    label: '모바일',
+    description: '상호작용 가능한 모바일 폰 환경입니다. 세로 스크롤을 사용할 수 있습니다.'
+  },
+  {
+    value: 'staticPoster',
+    label: '정적 포스터',
+    description: '한 페이지 안에 담기는 포스터형 React 렌더링입니다. 상호작용 없이 읽히도록 구성합니다.'
+  }
+];
+
+export const deploymentLabelOptions: Option<DeploymentUse>[] = [
+  ...deploymentOptions
+];
+
+export const layoutOptions: Option<LayoutId>[] = [
+  {
+    value: 'generated',
+    label: '생성형AI 레이아웃',
+    description: '선택한 설정값과 목업 DB를 바탕으로 Codex CLI가 새 React 페이지를 만듭니다.'
+  },
+  {
+    value: 'default',
+    label: '기본 레이아웃',
+    description: '생성형AI를 사용하지 않고 템플릿별 기본 레이아웃을 즉시 재사용합니다.'
+  }
 ];
 
 export const fieldLocationOptions: Option<FieldLocation>[] = [

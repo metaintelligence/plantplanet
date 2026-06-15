@@ -25,7 +25,7 @@ export default function ContentManager({
         <div>
           <p className="eyebrow">Content Library</p>
           <h1>콘텐츠 관리</h1>
-          <p>쿠키에 저장된 데모 콘텐츠를 조회, 수정, 삭제하고 게시 상태를 관리합니다.</p>
+          <p>로컬 서버 파일에 저장된 데모 콘텐츠를 조회, 수정, 삭제하고 게시 상태를 관리합니다.</p>
         </div>
         <button className="primary-button" type="button" onClick={onCreate}>
           콘텐츠 생성

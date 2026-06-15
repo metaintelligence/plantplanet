@@ -8,7 +8,7 @@ type Audience = 'children' | 'adults' | 'foreigners';
 type Language = 'ko' | 'en' | 'ja' | 'zh';
 type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'auto';
 type EstimatedTime = '10sec' | '30sec' | '1min' | '3min';
-type DeploymentUse = 'plantQr' | 'kiosk' | 'mobileCourse' | 'educationProgram' | 'sns';
+type DeploymentUse = 'kiosk' | 'mobile' | 'staticPoster';
 type FieldLocation = 'greenhouse' | 'garden' | 'outdoorGarden' | 'forestTrail' | 'park';
 type FocusTopic =
   | 'appearance'
@@ -113,11 +113,9 @@ const seasonLabel: Record<Season, string> = {
 };
 
 const deploymentLabel: Record<DeploymentUse, string> = {
-  plantQr: '식물 표찰 QR',
   kiosk: '전시관 키오스크',
-  mobileCourse: '모바일 관람 코스',
-  educationProgram: '교육 프로그램',
-  sns: 'SNS/홍보 페이지'
+  mobile: '모바일',
+  staticPoster: '정적 포스터'
 };
 
 const locationLabel: Record<FieldLocation, string> = {

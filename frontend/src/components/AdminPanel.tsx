@@ -60,11 +60,9 @@ const timeOptions: SelectOption<GenerateInput['estimatedTime']>[] = [
 ];
 
 const deploymentOptions: SelectOption<GenerateInput['deploymentUse']>[] = [
-  { value: 'plantQr', label: '식물 표찰 QR' },
   { value: 'kiosk', label: '전시관 키오스크' },
-  { value: 'mobileCourse', label: '모바일 관람 코스' },
-  { value: 'educationProgram', label: '교육 프로그램' },
-  { value: 'sns', label: 'SNS/홍보 페이지' }
+  { value: 'mobile', label: '모바일' },
+  { value: 'staticPoster', label: '정적 포스터' }
 ];
 
 const locationOptions: SelectOption<GenerateInput['fieldLocation']>[] = [

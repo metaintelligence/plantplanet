@@ -1,4 +1,6 @@
 # PlantPlanet
+- 내부 프로젝트명: PlantPlanet
+- 상품명: HanGarden (변동여지있음)
 
 - K-Startup 초격차 스타트업 프로젝트(DIPS)  
   중기부에서 진행하는 초격차 기술을 수요기업의 현장 인프라 적용으로 혁신적 협업 모델 창출을 지원하는 프로그램

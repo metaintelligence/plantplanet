@@ -218,6 +218,10 @@ button:disabled {
   color: #ffffff;
 }
 
+.soft-disabled {
+  opacity: 0.64;
+}
+
 .secondary-button {
   border: 1px solid #cbd6cf;
   background: #ffffff;
@@ -350,6 +354,208 @@ button:disabled {
   gap: 10px;
 }
 
+.plant-data-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.dashboard-scroll-list {
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable;
+}
+
+.plant-scroll-list {
+  max-height: 512px;
+}
+
+.recent-scroll-list {
+  max-height: 430px;
+}
+
+.job-scroll-list {
+  max-height: 620px;
+}
+
+.plant-data-card {
+  overflow: hidden;
+  border: 1px solid #dfe6e1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.plant-data-card.expanded {
+  border-color: #8eaa72;
+  box-shadow: inset 0 0 0 1px #8eaa72;
+}
+
+.plant-data-summary {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 94px;
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  text-align: left;
+}
+
+.plant-data-summary img {
+  width: 88px;
+  height: 72px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.plant-data-summary:hover {
+  background: #f4f8f0;
+}
+
+.plant-data-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.plant-data-copy strong {
+  color: #22342b;
+  font-size: 16px;
+}
+
+.plant-data-copy em,
+.plant-data-copy span {
+  overflow: hidden;
+  color: #69766e;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plant-data-detail {
+  display: grid;
+  gap: 16px;
+  border-top: 1px solid #e3e9e5;
+  background: #fbfcf7;
+  padding: 14px;
+}
+
+.plant-data-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plant-data-facts div,
+.plant-season-grid div,
+.plant-data-message {
+  border: 1px solid #dfe6e1;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.plant-data-facts span,
+.plant-season-grid span {
+  display: block;
+  color: #647267;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.plant-data-facts strong {
+  display: block;
+  margin-top: 5px;
+  color: #263b31;
+  line-height: 1.45;
+}
+
+.plant-data-detail h3 {
+  margin: 0 0 8px;
+  color: #253b31;
+  font-size: 16px;
+}
+
+.plant-data-detail ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 20px;
+  color: #44584d;
+  line-height: 1.5;
+}
+
+.plant-season-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plant-season-grid p,
+.plant-data-message p {
+  margin: 6px 0 0;
+  color: #53645a;
+  line-height: 1.55;
+}
+
+.plant-data-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(980px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  box-shadow: 0 24px 70px rgba(34, 48, 42, 0.24);
+}
+
+.plant-data-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #dfe6e1;
+  padding: 20px;
+}
+
+.plant-data-dialog-header h2 {
+  margin: 0;
+  color: #1f3028;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.plant-data-dialog-header p {
+  margin: 7px 0 0;
+  color: #657269;
+  font-style: italic;
+}
+
+.plant-data-dialog-body {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 18px;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+}
+
+.plant-data-dialog-body > img {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  max-height: 520px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.plant-data-dialog .plant-data-detail {
+  border-top: 0;
+  border-radius: 8px;
+}
+
 .plant-card,
 .recent-list button {
   display: grid;
@@ -389,6 +595,7 @@ button:disabled {
 
 .recent-list button {
   grid-template-columns: 1fr auto;
+  min-height: 76px;
 }
 
 .job-panel {
@@ -405,6 +612,7 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  min-height: 108px;
   border: 1px solid #dfe6e1;
   border-radius: 8px;
   background: #ffffff;
@@ -453,7 +661,8 @@ button:disabled {
 }
 
 .job-status.running,
-.job-status.queued {
+.job-status.queued,
+.job-status.revising {
   background: #edf5e8;
   color: #3b6731;
 }
@@ -719,6 +928,17 @@ button:disabled {
   font-weight: 800;
 }
 
+.notice-banner {
+  margin-bottom: 16px;
+  border: 1px solid #d8dfba;
+  border-radius: 8px;
+  background: #fbf8e8;
+  color: #66581b;
+  padding: 13px 16px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .toast-stack {
   position: fixed;
   right: 22px;
@@ -811,7 +1031,185 @@ button:disabled {
 }
 
 .content-detail-grid {
-  grid-template-columns: minmax(0, 1fr) 390px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-detail-page.content-detail-kiosk,
+.content-detail-page.content-detail-static-poster {
+  width: min(1780px, calc(100vw - 44px));
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.content-detail-grid.device-kiosk,
+.content-detail-grid.device-static-poster {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.device-preview-shell {
+  min-width: 0;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  padding: 16px;
+}
+
+.device-preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.device-preview-header-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.device-preview-header h2 {
+  margin: 0;
+  color: #22342b;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.device-preview-header span {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  border: 1px solid #d5dfd8;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #405448;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.device-preview-zoom {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid #d5dfd8;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.device-preview-zoom button {
+  min-height: 30px;
+  border: 0;
+  border-left: 1px solid #d5dfd8;
+  background: transparent;
+  color: #405448;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.device-preview-zoom button:first-child {
+  border-left: 0;
+}
+
+.device-preview-zoom button.active {
+  background: #245b42;
+  color: #ffffff;
+}
+
+.device-preview-canvas {
+  min-width: 0;
+  overflow: auto;
+  border: 1px solid #cbd8d0;
+  border-radius: 8px;
+  background: #eef1ef;
+}
+
+.device-preview-scale-box,
+.device-preview-stage,
+.device-preview-content-wrap,
+.device-preview-content-wrap > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.device-preview-shell.kiosk .device-preview-canvas {
+  display: grid;
+  place-items: center;
+  height: min(1080px, calc(100vh - 210px));
+  min-height: 560px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: auto;
+}
+
+.device-preview-shell.kiosk .device-preview-scale-box {
+  width: var(--preview-scaled-width);
+  height: var(--preview-scaled-height);
+  min-width: var(--preview-scaled-width);
+  min-height: var(--preview-scaled-height);
+  overflow: visible;
+  border: 1px solid #cbd8d0;
+  border-radius: 8px;
+  background: #eef1ef;
+}
+
+.device-preview-shell.kiosk .device-preview-stage {
+  width: 1920px;
+  height: 1080px;
+  min-width: 1920px;
+  min-height: 1080px;
+  transform: scale(var(--preview-scale));
+  transform-origin: top left;
+}
+
+.device-preview-shell.kiosk .device-preview-content-wrap > .ai-generated-layout {
+  border: 0;
+  border-radius: 0;
+}
+
+.device-preview-shell.mobile {
+  width: 100%;
+}
+
+.device-preview-shell.mobile .device-preview-canvas {
+  width: min(920px, 100%);
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  border-width: 1px;
+  border-color: #cbd8d0;
+  border-radius: 8px;
+  background: #eef1ef;
+}
+
+.device-preview-shell.mobile .device-preview-scale-box,
+.device-preview-shell.mobile .device-preview-stage,
+.device-preview-shell.mobile .device-preview-content-wrap,
+.device-preview-shell.mobile .device-preview-content-wrap > * {
+  height: 100%;
+  min-height: 100%;
+}
+
+.device-preview-shell.static-poster .device-preview-canvas {
+  width: min(960px, 100%);
+  aspect-ratio: 4 / 5;
+  max-height: calc(100vh - 210px);
+  margin: 0 auto;
+}
+
+.device-preview-shell.static-poster .device-preview-scale-box,
+.device-preview-shell.static-poster .device-preview-stage,
+.device-preview-shell.static-poster .device-preview-content-wrap,
+.device-preview-shell.static-poster .device-preview-content-wrap > * {
+  height: 100%;
+  min-height: 100%;
+}
+
+.device-preview-shell.responsive .device-preview-canvas {
+  min-height: 620px;
 }
 
 .content-page-template {
@@ -1545,6 +1943,49 @@ button:disabled {
   font-weight: 800;
 }
 
+.error-banner.compact {
+  margin-bottom: 0;
+}
+
+.dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgba(28, 37, 32, 0.32);
+  padding: 18px;
+}
+
+.revision-dialog {
+  display: grid;
+  width: min(560px, 100%);
+  gap: 14px;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  box-shadow: 0 24px 70px rgba(34, 48, 42, 0.22);
+  padding: 22px;
+}
+
+.revision-dialog h2 {
+  margin: 0;
+  color: #1f3028;
+  font-size: 24px;
+}
+
+.revision-dialog p {
+  margin: 8px 0 0;
+  color: #5b6a60;
+  line-height: 1.55;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 @media (max-width: 980px) {
   .console-header,
   .page-header,
@@ -1562,6 +2003,13 @@ button:disabled {
 
   .console-main {
     width: min(100% - 24px, 760px);
+  }
+
+  .content-detail-page.content-detail-kiosk,
+  .content-detail-page.content-detail-static-poster {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
   }
 
   .metric-grid,
@@ -1586,6 +2034,31 @@ button:disabled {
   .plant-picker-grid,
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .plant-data-facts,
+  .plant-season-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-data-dialog-body {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-data-dialog-body > img {
+    position: static;
+    max-height: 320px;
+  }
+
+  .content-detail-grid.device-mobile,
+  .content-detail-grid.device-kiosk,
+  .content-detail-grid.device-static-poster {
+    grid-template-columns: 1fr;
+  }
+
+  .device-preview-shell.kiosk .device-preview-canvas {
+    height: min(1080px, calc(100vh - 180px));
+    min-height: 420px;
   }
 
   .wizard-steps,
@@ -1638,8 +2111,33 @@ button:disabled {
   }
 
   .plant-picker-card img,
-  .plant-card img {
+  .plant-card img,
+  .plant-data-summary img {
     width: 100%;
     height: 150px;
+  }
+
+  .plant-data-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-scroll-list {
+    max-height: 830px;
+  }
+
+  .recent-scroll-list {
+    max-height: 430px;
+  }
+
+  .job-scroll-list {
+    max-height: 620px;
+  }
+
+  .plant-data-dialog-header {
+    display: grid;
+  }
+
+  .dialog-actions {
+    display: grid;
   }
 }

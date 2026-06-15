@@ -1,6 +1,6 @@
 import {
   audienceOptions,
-  deploymentOptions,
+  deploymentLabelOptions,
   estimatedTimeOptions,
   fieldLocationOptions,
   focusTopicOptions,
@@ -31,7 +31,7 @@ export function createDefaultSettings(plantId = ''): ContentSettings {
     languages: ['ko'],
     season: 'auto',
     estimatedTime: '1min',
-    deploymentUse: 'plantQr',
+    deploymentUse: 'mobile',
     fieldLocation: 'garden',
     focusTopics: ['appearance', 'ecology', 'conservation'],
     tone: 'friendly',
@@ -104,7 +104,7 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
       items: [
         `대상: ${audienceText}`,
         `언어: ${languageText}`,
-        `배포: ${labelOf(deploymentOptions, settings.deploymentUse)}`,
+        `배포 단말기: ${labelOf(deploymentLabelOptions, settings.deploymentUse)}`,
         `현장: ${labelOf(fieldLocationOptions, settings.fieldLocation)}`,
         `설명 항목: ${focusText}`,
         `체험 시간: ${labelOf(estimatedTimeOptions, settings.estimatedTime)}`

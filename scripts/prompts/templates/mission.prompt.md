@@ -1,25 +1,32 @@
-# Template-specific prompt: mission
+# 콘텐츠 유형별 프롬프트: 미션
 
-Generate a field mission page for visitors.
+방문자가 식물 앞에서 안전하게 수행할 수 있는 현장 미션 페이지를 만드세요.
 
-Required experience:
+필수 경험:
 
-- The page should give the visitor a clear action to perform near the plant.
-- Use a mission structure: mission briefing, steps, evidence/check result, and closing message.
-- Use `plant.observationTips`, `plant.features`, and current season highlight to create concrete tasks.
-- For `estimatedTime` of `1min` or less, use 3 mission steps maximum.
-- If audience includes `children`, use playful but safe instructions.
+- 핵심 경험은 정보 열람이 아니라 행동 안내입니다.
+- 미션 브리핑, 수행 단계, 발견 결과, 안전/예절 메시지를 포함합니다.
+- `plant.observationTips`, `plant.features`, 현재 계절 하이라이트를 바탕으로 구체적인 미션을 만듭니다.
+- `estimatedTime`이 `1min` 이하이면 미션 단계는 3개 이하로 제한합니다.
+- 어린이 대상이면 놀이처럼 느껴지되 안전한 행동만 제안합니다.
+- `extraRequest`가 있으면 미션 제목 또는 단계 중 하나에 직접 반영합니다.
 
-Layout requirements:
+권장 구조:
 
-- Hero: mission title, plant image, estimated time in Korean, and a clear start cue.
-- Mission steps: large step cards with simple verbs such as "찾아보기", "비교하기", "생각하기".
-- Result section: a simple completion callout or "오늘의 발견" note.
-- Safety/etiquette: remind visitors not to pick leaves, flowers, or fruit.
+- 첫 화면: 미션 제목, 식물 이미지 또는 미션 코드형 비주얼, 예상 시간, 시작 신호.
+- 미션 단계: “찾아보기”, “비교하기”, “생각하기”처럼 동사 중심의 큰 단계 카드.
+- 발견 결과: 오늘의 발견을 한 문장으로 정리하거나 완료 콜아웃을 표시합니다.
+- 안전/예절: 잎, 꽃, 열매를 따거나 만지지 말라는 안내를 명확히 넣습니다.
 
-Bad-output avoidance:
+단말기별 주의:
 
-- Do not make generic information cards instead of tasks.
-- Do not ask visitors to touch, pick, smell closely, climb, or damage plants.
-- Do not expose raw enum values or internal content names.
-- Do not create more steps than the requested time can support.
+- `kiosk`: 한 화면 안에서 미션 전체가 보이게 단계 수와 텍스트를 압축합니다.
+- `mobile`: 현장에서 들고 보며 수행할 수 있도록 단계 간 간격과 버튼/카드 크기를 넉넉히 둡니다.
+- `staticPoster`: 체크나 완료 버튼 없이 읽기형 미션 포스터로 구성합니다.
+
+피해야 할 출력:
+
+- 일반 정보 카드만 나열하고 행동이 없는 페이지를 만들지 않습니다.
+- 만지기, 따기, 냄새를 너무 가까이 맡기, 올라가기, 훼손하기 같은 행동을 요청하지 않습니다.
+- 원시 enum 값이나 내부 콘텐츠 이름을 보여주지 않습니다.
+- 요청된 체험 시간에 비해 지나치게 많은 단계를 만들지 않습니다.

@@ -5,8 +5,10 @@ interface AppShellProps {
   menuOpen: boolean;
   currentPath: string;
   contentCount: number;
+  generationLocked: boolean;
   onToggleMenu: () => void;
   onNavigate: (path: string) => void;
+  onCreateBlocked: () => void;
 }
 
 const exhibitionSites = [
@@ -21,8 +23,10 @@ export default function AppShell({
   menuOpen,
   currentPath,
   contentCount,
+  generationLocked,
   onToggleMenu,
-  onNavigate
+  onNavigate,
+  onCreateBlocked
 }: AppShellProps) {
   const base = import.meta.env.BASE_URL;
 
@@ -45,7 +49,18 @@ export default function AppShell({
         </div>
         <div className="header-actions">
           <span className="status-pill">{contentCount}개 콘텐츠</span>
-          <button className="primary-button" type="button" onClick={() => go('/create')}>
+          <button
+            className={generationLocked ? 'primary-button soft-disabled' : 'primary-button'}
+            type="button"
+            aria-disabled={generationLocked}
+            onClick={() => {
+              if (generationLocked) {
+                onCreateBlocked();
+                return;
+              }
+              go('/create');
+            }}
+          >
             콘텐츠 생성
           </button>
         </div>
@@ -55,7 +70,17 @@ export default function AppShell({
         <div className="side-menu-inner">
           <section className="menu-section">
             <h2>콘텐츠</h2>
-            <button className={currentPath === '/create' ? 'active' : ''} type="button" onClick={() => go('/create')}>
+            <button
+              className={currentPath === '/create' ? 'active' : ''}
+              type="button"
+              onClick={() => {
+                if (generationLocked) {
+                  onCreateBlocked();
+                  return;
+                }
+                go('/create');
+              }}
+            >
               콘텐츠 생성
             </button>
             <button className={currentPath === '/manage' ? 'active' : ''} type="button" onClick={() => go('/manage')}>

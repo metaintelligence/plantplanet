@@ -4,7 +4,15 @@ import path from 'node:path';
 export interface LayoutGenerationPayload {
   jobId: string;
   contentId: string;
-  settingsJsonArray: string[];
+  settingsJson: string;
+  settings?: unknown;
+}
+
+export interface LayoutRevisionPayload {
+  jobId: string;
+  contentId: string;
+  revisionPrompt: string;
+  content?: unknown;
   settings?: unknown;
 }
 
@@ -17,12 +25,41 @@ interface RunOptions {
   onProgress?: (message: string) => void;
 }
 
-const LAYOUT_GENERATION_TIMEOUT_MS = Number(process.env.LAYOUT_GENERATION_TIMEOUT_MS ?? 5 * 60 * 1000);
+const LAYOUT_GENERATION_TIMEOUT_MS = Number(process.env.LAYOUT_GENERATION_TIMEOUT_MS ?? 20 * 60 * 1000);
 let activeJobId: string | null = null;
 
 export async function runLayoutGenerationCli(
   payload: LayoutGenerationPayload,
   { rootDir, onProgress }: RunOptions
+): Promise<LayoutGenerationResult> {
+  return runLayoutCliScript('generate-layout-page.ts', payload, {
+    rootDir,
+    onProgress,
+    startMessage: 'Codex CLI 레이아웃 생성 스크립트를 실행합니다.'
+  });
+}
+
+export async function runLayoutRevisionCli(
+  payload: LayoutRevisionPayload,
+  { rootDir, onProgress }: RunOptions
+): Promise<LayoutGenerationResult> {
+  return runLayoutCliScript('revise-layout-page.ts', payload, {
+    rootDir,
+    onProgress,
+    startMessage: 'Codex CLI 레이아웃 수정 스크립트를 실행합니다.'
+  });
+}
+
+async function runLayoutCliScript(
+  scriptFileName: string,
+  payload: LayoutGenerationPayload | LayoutRevisionPayload,
+  {
+    rootDir,
+    onProgress,
+    startMessage
+  }: RunOptions & {
+    startMessage: string;
+  }
 ): Promise<LayoutGenerationResult> {
   if (activeJobId) {
     throw new Error(`다른 생성 작업이 이미 실행 중입니다: ${activeJobId}`);
@@ -32,12 +69,12 @@ export async function runLayoutGenerationCli(
   const logs: string[] = [];
 
   try {
-    const scriptPath = path.join(rootDir, 'scripts', 'generate-layout-page.ts');
+    const scriptPath = path.join(rootDir, 'scripts', scriptFileName);
     const tsxCliPath = path.join(rootDir, 'node_modules', 'tsx', 'dist', 'cli.mjs');
     const inputPayload = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64');
     const deadline = Date.now() + LAYOUT_GENERATION_TIMEOUT_MS;
 
-    onProgress?.('Codex CLI 레이아웃 생성 스크립트를 실행합니다.');
+    onProgress?.(startMessage);
     await runCommand(
       process.execPath,
       [tsxCliPath, scriptPath, '--input-base64', inputPayload],

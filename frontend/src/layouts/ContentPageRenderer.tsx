@@ -13,7 +13,7 @@ export default function ContentPageRenderer({
   content: GeneratedContent;
   plant: PlantRecord;
 }) {
-  const GeneratedLayout = generatedLayoutRegistry[content.id];
+  const GeneratedLayout = content.settings.layoutId === 'generated' ? generatedLayoutRegistry[content.id] : null;
   if (GeneratedLayout) {
     return <GeneratedLayout content={content} plant={plant} />;
   }

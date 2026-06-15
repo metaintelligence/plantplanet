@@ -2,7 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 export type ContentStatus = 'draft' | 'published';
-export type LayoutGenerationJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'timeout';
+export type LayoutGenerationJobStatus = 'queued' | 'running' | 'revising' | 'completed' | 'failed' | 'timeout';
+export type LayoutGenerationJobOperation = 'generate' | 'revise';
 
 export interface GeneratedContentRecord {
   id: string;
@@ -25,13 +26,15 @@ export interface LayoutGenerationJobRecord {
   template: string;
   routePath: string;
   status: LayoutGenerationJobStatus;
+  operation?: LayoutGenerationJobOperation;
   message: string;
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
+  targetFile?: string;
 }
 
-const LAYOUT_GENERATION_TIMEOUT_MS = Number(process.env.LAYOUT_GENERATION_TIMEOUT_MS ?? 5 * 60 * 1000);
+const LAYOUT_GENERATION_TIMEOUT_MS = Number(process.env.LAYOUT_GENERATION_TIMEOUT_MS ?? 20 * 60 * 1000);
 const writeQueues = new Map<string, Promise<unknown>>();
 
 export function createFileDataStore(rootDir: string) {
@@ -101,7 +104,7 @@ async function normalizeExpiredJobs(filePath: string, jobs: LayoutGenerationJobR
   const now = Date.now();
   let changed = false;
   const normalized = jobs.map((job) => {
-    if (job.status !== 'queued' && job.status !== 'running') {
+    if (job.status !== 'queued' && job.status !== 'running' && job.status !== 'revising') {
       return job;
     }
 
@@ -114,7 +117,7 @@ async function normalizeExpiredJobs(filePath: string, jobs: LayoutGenerationJobR
     return {
       ...job,
       status: 'timeout' as const,
-      message: '5분 안에 완료 응답을 받지 못했습니다.',
+      message: '20분 안에 완료 응답을 받지 못했습니다.',
       updatedAt: new Date().toISOString()
     };
   });

@@ -5,7 +5,7 @@ import path from 'node:path';
 interface GenerateLayoutPayload {
   jobId: string;
   contentId: string;
-  settingsJsonArray: string[];
+  settingsJson: string;
   settings?: Record<string, unknown>;
 }
 
@@ -24,7 +24,9 @@ const manifestPath = path.join(generatedDir, 'layout-manifest.json');
 const registryPath = path.join(generatedDir, 'generatedLayoutRegistry.tsx');
 const defaultPromptPath = path.join(rootDir, 'scripts', 'prompts', 'generate-layout-page.prompt.md');
 const templatePromptsDir = path.join(rootDir, 'scripts', 'prompts', 'templates');
+const displayPromptsDir = path.join(rootDir, 'scripts', 'prompts', 'displays');
 const mockDbPath = path.join(rootDir, 'frontend', 'public', 'mock_db.json');
+const contentTypesPath = path.join(rootDir, 'frontend', 'src', 'types', 'content.ts');
 
 async function main() {
   const payload = readPayload();
@@ -41,8 +43,8 @@ async function main() {
     targetRelativePath,
     template,
     settings,
-    settingsJsonArray: payload.settingsJsonArray,
-    mockDbSummary: await createMockDbSummary(settings)
+    mockDbSummary: await createMockDbSummary(settings),
+    contentTypesSource: await fs.readFile(contentTypesPath, 'utf8')
   });
 
   console.log('generate-layout: invoking Codex CLI');
@@ -83,9 +85,9 @@ function readSettings(payload: GenerateLayoutPayload) {
     return payload.settings;
   }
 
-  const firstSettingsJson = payload.settingsJsonArray[0];
+  const firstSettingsJson = payload.settingsJson;
   if (!firstSettingsJson) {
-    throw new Error('settingsJsonArray must include at least one JSON string.');
+    throw new Error('settingsJson must include a JSON string.');
   }
 
   const parsed = JSON.parse(firstSettingsJson);
@@ -136,29 +138,33 @@ async function buildCodexPrompt({
   targetRelativePath,
   template,
   settings,
-  settingsJsonArray,
-  mockDbSummary
+  mockDbSummary,
+  contentTypesSource
 }: {
   componentName: string;
   targetRelativePath: string;
   template: string;
   settings: Record<string, unknown>;
-  settingsJsonArray: string[];
   mockDbSummary: unknown;
+  contentTypesSource: string;
 }) {
   const promptTemplatePath = process.env.CODEX_LAYOUT_PROMPT_PATH
     ? path.resolve(rootDir, process.env.CODEX_LAYOUT_PROMPT_PATH)
     : defaultPromptPath;
   const templateContent = await fs.readFile(promptTemplatePath, 'utf8');
   const templatePrompt = await readTemplatePrompt(template);
+  const deploymentUse = asString(settings.deploymentUse, 'responsive');
+  const displayPrompt = await readDisplayPrompt(deploymentUse);
 
   return templateContent
     .replaceAll('{{componentName}}', componentName)
     .replaceAll('{{targetFile}}', targetRelativePath)
     .replaceAll('{{template}}', template)
     .replaceAll('{{templatePrompt}}', templatePrompt)
+    .replaceAll('{{deploymentUse}}', deploymentUse)
+    .replaceAll('{{displayPrompt}}', displayPrompt)
     .replaceAll('{{mockDbSummary}}', JSON.stringify(mockDbSummary, null, 2))
-    .replaceAll('{{settingsJsonArray}}', JSON.stringify(settingsJsonArray, null, 2))
+    .replaceAll('{{contentTypesSource}}', contentTypesSource)
     .replaceAll('{{settingsJson}}', JSON.stringify(settings, null, 2));
 }
 
@@ -175,10 +181,33 @@ async function readTemplatePrompt(template: string) {
     const nodeError = error as NodeJS.ErrnoException;
     if (nodeError.code === 'ENOENT') {
       return [
-        '# Template-specific prompt: fallback',
+        '# 콘텐츠 유형별 프롬프트: 기본 fallback',
         '',
-        `No dedicated prompt file was found for template \`${template}\`.`,
-        'Create a polished visitor-facing page that follows the common rules and avoids raw settings/DB dumps.'
+        `템플릿 \`${template}\`에 대한 전용 프롬프트 파일을 찾지 못했습니다.`,
+        '공용 규칙을 따르며 방문자용 페이지로 완성하고, 원시 설정값이나 DB 덤프를 화면에 노출하지 마세요.'
+      ].join('\n');
+    }
+    throw error;
+  }
+}
+
+async function readDisplayPrompt(deploymentUse: string) {
+  const safeDeploymentUse = deploymentUse.match(/^[a-zA-Z0-9_-]+$/) ? deploymentUse : 'responsive';
+  const configuredDir = process.env.CODEX_LAYOUT_DISPLAY_PROMPT_DIR
+    ? path.resolve(rootDir, process.env.CODEX_LAYOUT_DISPLAY_PROMPT_DIR)
+    : displayPromptsDir;
+  const promptPath = path.join(configuredDir, `${safeDeploymentUse}.prompt.md`);
+
+  try {
+    return await fs.readFile(promptPath, 'utf8');
+  } catch (error) {
+    const nodeError = error as NodeJS.ErrnoException;
+    if (nodeError.code === 'ENOENT') {
+      return [
+        '# 배포 단말기별 레이아웃 규칙: 기본 fallback',
+        '',
+        `deploymentUse 값 \`${deploymentUse}\`에 대한 전용 규칙 파일을 찾지 못했습니다.`,
+        '콘텐츠가 부모 컨테이너의 폭 안에서 자연스럽게 흐르도록 만들고, 루트 요소에서 overflow hidden으로 내용을 자르지 마세요.'
       ].join('\n');
     }
     throw error;
@@ -260,7 +289,7 @@ function runCodexExec(prompt: string) {
       shell: false
     });
 
-    const timeoutMs = Number(process.env.CODEX_LAYOUT_TIMEOUT_MS ?? 300000);
+    const timeoutMs = Number(process.env.CODEX_LAYOUT_TIMEOUT_MS ?? 20 * 60 * 1000);
     const timeout = setTimeout(() => {
       child.kill();
       reject(new Error(`Codex CLI timed out after ${timeoutMs}ms`));

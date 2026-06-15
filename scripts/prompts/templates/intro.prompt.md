@@ -1,26 +1,32 @@
-# Template-specific prompt: intro
+# 콘텐츠 유형별 프롬프트: 식물 소개
 
-Generate a concise plant introduction page.
+방문자가 “이 식물이 무엇인지, 지금 무엇을 보면 좋은지, 왜 의미가 있는지” 빠르게 이해하는 소개 페이지를 만드세요.
 
-Required experience:
+필수 경험:
 
-- The page should help a visitor understand "What is this plant, what should I notice now, and why does it matter?"
-- Prioritize a calm field-guide experience over a dense database profile.
-- Use 3 to 5 well-composed sections depending on `estimatedTime`.
-- Highlight the current season using `plant.seasonHighlights[settings.season]` or `plant.seasonHighlights.auto`.
-- Use `plant.features` and `plant.observationTips` as visitor observation prompts, not raw bullet dumps.
+- 식물 DB 프로필이 아니라 현장에서 읽는 짧은 해설 페이지여야 합니다.
+- `plant.seasonHighlights[settings.season]` 또는 `plant.seasonHighlights.auto`를 현재 관찰 포인트로 반영합니다.
+- `focusTopics`에 선택된 항목을 최소 하나의 섹션 제목이나 주요 문장에 반영합니다.
+- `extraRequest`가 있으면 첫 화면의 요약 또는 주요 관찰 포인트에 반드시 녹입니다.
+- `estimatedTime`이 짧을수록 섹션을 줄이고 핵심 문장을 선명하게 만듭니다.
 
-Layout requirements:
+권장 구조:
 
-- Hero: plant image, Korean visitor-facing title, scientific name as a subtitle, and one short summary sentence.
-- Quick facts: family, habitat, flowering season, and size may appear as compact Korean facts.
-- Observation section: "지금 볼 포인트" with 2 to 4 short observation prompts.
-- Meaning section: one conservation or ecological message.
-- Optional footer: image source can appear subtly, but not as a primary card.
+- 첫 화면: 식물 이미지, 방문자용 한국어 제목, 학명은 보조 텍스트, 한 문장 핵심 소개.
+- 빠른 정보: 과, 서식 환경, 개화/관찰 시기, 크기를 짧은 한국어 사실 카드로 표시합니다.
+- 지금 볼 포인트: `plant.features`와 `plant.observationTips`에서 고른 2~4개 관찰 힌트.
+- 의미: 보전 메시지나 생태적 가치 한 단락.
+- 이미지 출처는 필요하면 아주 작게 보조 정보로만 표시합니다.
 
-Bad-output avoidance:
+단말기별 주의:
 
-- Do not call the page "intro" or "식물 소개 템플릿".
-- Do not expose raw category values like `tree`, `shrub`, or `herb`; map them to Korean when needed.
-- Do not let DB facts dominate the first viewport.
-- Do not make more than one large image.
+- `kiosk`: 첫 화면 안에 이미지, 핵심 소개, 관찰 포인트가 모두 보여야 합니다.
+- `mobile`: 이미지 아래로 정보가 자연스럽게 이어지는 세로 흐름을 허용합니다.
+- `staticPoster`: 제목, 이미지, 빠른 정보, 관찰 포인트, 의미가 한 포스터 안에 정리되어야 합니다.
+
+피해야 할 출력:
+
+- 페이지 제목을 “intro”, “식물 소개 템플릿”처럼 쓰지 않습니다.
+- `tree`, `shrub`, `herb` 같은 원시 카테고리 값을 그대로 노출하지 않습니다.
+- DB의 모든 필드를 같은 크기의 카드로 나열하지 않습니다.
+- 첫 화면을 긴 설명문으로 채우지 않습니다.
