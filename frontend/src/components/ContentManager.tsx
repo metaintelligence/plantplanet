@@ -25,7 +25,7 @@ export default function ContentManager({
         <div>
           <p className="eyebrow">Content Library</p>
           <h1>콘텐츠 관리</h1>
-          <p>로컬 서버 파일에 저장된 데모 콘텐츠를 조회, 수정, 삭제하고 게시 상태를 관리합니다.</p>
+          <p>로컬 서버 파일에 저장된 모든 콘텐츠를 조회하고, 수정하고, 게시 상태를 관리합니다.</p>
         </div>
         <button className="primary-button" type="button" onClick={onCreate}>
           콘텐츠 생성
@@ -45,6 +45,7 @@ export default function ContentManager({
           {contents.map((content) => {
             const plant = plants.find((item) => item.id === content.settings.plantId);
             const fullLink = `${window.location.href.split('#')[0]}${content.routePath}`;
+
             return (
               <article className="content-row" key={content.id}>
                 <div className="content-row-main">
@@ -52,7 +53,9 @@ export default function ContentManager({
                     {content.status === 'published' ? '게시됨' : '초안'}
                   </span>
                   <h2>{content.title}</h2>
-                  <p>{plant?.koreanName ?? content.settings.plantId} / {content.summary}</p>
+                  <p>
+                    {plant?.koreanName ?? content.settings.plantId} / {content.summary}
+                  </p>
                   <code>{fullLink}</code>
                 </div>
                 <div className="content-row-actions">
@@ -65,9 +68,7 @@ export default function ContentManager({
                   <button
                     className="secondary-button"
                     type="button"
-                    onClick={() =>
-                      onChangeStatus(content, content.status === 'published' ? 'draft' : 'published')
-                    }
+                    onClick={() => onChangeStatus(content, content.status === 'published' ? 'draft' : 'published')}
                   >
                     {content.status === 'published' ? '초안 전환' : '게시'}
                   </button>

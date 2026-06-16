@@ -81,8 +81,13 @@ function readPayload(): GenerateLayoutPayload {
 }
 
 function readSettings(payload: GenerateLayoutPayload) {
+  const normalizeSettings = (settings: Record<string, unknown>) => ({
+    ...settings,
+    template: settings.template === 'checklist' ? 'mission' : settings.template
+  });
+
   if (payload.settings && typeof payload.settings === 'object') {
-    return payload.settings;
+    return normalizeSettings(payload.settings);
   }
 
   const firstSettingsJson = payload.settingsJson;
@@ -94,7 +99,7 @@ function readSettings(payload: GenerateLayoutPayload) {
   if (!parsed || typeof parsed !== 'object') {
     throw new Error('settings JSON must be an object.');
   }
-  return parsed as Record<string, unknown>;
+  return normalizeSettings(parsed as Record<string, unknown>);
 }
 
 async function readManifest(): Promise<ManifestEntry[]> {

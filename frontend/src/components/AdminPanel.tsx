@@ -11,15 +11,19 @@ const plantOptions: SelectOption<GenerateInput['plantName']>[] = [
   { value: '동백나무', label: '동백나무' },
   { value: '왕벚나무', label: '왕벚나무' },
   { value: '금강초롱꽃', label: '금강초롱꽃' },
-  { value: '산수국', label: '산수국' }
+  { value: '산수국', label: '산수국' },
+  { value: '아카시아', label: '아카시아' },
+  { value: '무궁화', label: '무궁화' },
+  { value: '소나무', label: '소나무' },
+  { value: '단풍나무', label: '단풍나무' },
+  { value: '은행나무', label: '은행나무' }
 ];
 
 const templateOptions: SelectOption<GenerateInput['template']>[] = [
   { value: 'intro', label: '식물 소개형' },
   { value: 'storytelling', label: '스토리텔링형' },
   { value: 'quiz', label: '퀴즈형' },
-  { value: 'mission', label: '미션형' },
-  { value: 'checklist', label: '관찰 체크리스트형' }
+  { value: 'mission', label: '관찰 미션형' }
 ];
 
 const purposeOptions: SelectOption<GenerateInput['purpose']>[] = [
@@ -28,11 +32,11 @@ const purposeOptions: SelectOption<GenerateInput['purpose']>[] = [
   { value: 'experience', label: '체험/미션' },
   { value: 'campaign', label: '캠페인' },
   { value: 'promotion', label: '전시 홍보' },
-  { value: 'route', label: '관람 동선 유도' }
+  { value: 'route', label: '관람 동선 안내' }
 ];
 
 const audienceOptions: SelectOption<GenerateInput['audience']>[] = [
-  { value: 'children', label: '아동' },
+  { value: 'children', label: '어린이' },
   { value: 'adults', label: '성인' },
   { value: 'foreigners', label: '외국인' }
 ];
@@ -60,7 +64,7 @@ const timeOptions: SelectOption<GenerateInput['estimatedTime']>[] = [
 ];
 
 const deploymentOptions: SelectOption<GenerateInput['deploymentUse']>[] = [
-  { value: 'kiosk', label: '전시관 키오스크' },
+  { value: 'kiosk', label: '키오스크' },
   { value: 'mobile', label: '모바일' },
   { value: 'staticPoster', label: '정적 포스터' }
 ];
@@ -74,20 +78,20 @@ const locationOptions: SelectOption<GenerateInput['fieldLocation']>[] = [
 ];
 
 const focusTopicOptions: SelectOption<GenerateInput['focusTopics'][number]>[] = [
-  { value: 'appearance', label: '생김새' },
+  { value: 'appearance', label: '외형' },
   { value: 'ecology', label: '생태' },
   { value: 'nameOrigin', label: '이름 유래' },
   { value: 'cultureHistory', label: '문화/역사' },
   { value: 'usage', label: '활용' },
   { value: 'conservation', label: '보전 가치' },
-  { value: 'comparison', label: '비교 학습' },
-  { value: 'funFacts', label: '재미 요소' }
+  { value: 'comparison', label: '비교 관찰' },
+  { value: 'funFacts', label: '흥미 요소' }
 ];
 
 const featureOptions: SelectOption<GenerateInput['featureOptions'][number]>[] = [
-  { value: 'voiceGuide', label: '음성 해설' },
-  { value: 'qaAi', label: '질문답변 AI' },
-  { value: 'similarPlantCards', label: '유사식물카드' }
+  { value: 'voiceGuide', label: '음성 가이드' },
+  { value: 'qaAi', label: '질문응답 AI' },
+  { value: 'similarPlantCards', label: '유사 식물 카드' }
 ];
 
 interface AdminPanelProps {
@@ -102,10 +106,7 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
     onChange({ ...input, [key]: value });
   };
 
-  const toggleListValue = <K extends 'focusTopics' | 'featureOptions'>(
-    key: K,
-    value: GenerateInput[K][number]
-  ) => {
+  const toggleListValue = <K extends 'focusTopics' | 'featureOptions'>(key: K, value: GenerateInput[K][number]) => {
     const currentValues = input[key] as string[];
     const nextValues = currentValues.includes(value)
       ? currentValues.filter((currentValue) => currentValue !== value)
@@ -125,68 +126,33 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
 
       <div className="setting-group">
         <p className="setting-title">기본 생성 설정</p>
-        <p className="setting-copy">대상 식물, 템플릿, 목적, 고객, 언어, 계절, 체험 시간을 기준으로 콘텐츠의 골격을 만듭니다.</p>
+        <p className="setting-copy">식물, 유형, 목적, 대상, 언어, 계절, 체험 시간을 기준으로 페이지의 방향을 잡습니다.</p>
       </div>
 
       <div className="form-grid">
-        <SelectField
-          label="대상 식물"
-          value={input.plantName}
-          options={plantOptions}
-          onChange={(value) => updateField('plantName', value)}
-        />
-        <SelectField
-          label="페이지 템플릿"
-          value={input.template}
-          options={templateOptions}
-          onChange={(value) => updateField('template', value)}
-        />
-        <SelectField
-          label="페이지 목적"
-          value={input.purpose}
-          options={purposeOptions}
-          onChange={(value) => updateField('purpose', value)}
-        />
-        <SelectField
-          label="대상 고객"
-          value={input.audience}
-          options={audienceOptions}
-          onChange={(value) => updateField('audience', value)}
-        />
-        <SelectField
-          label="대상 언어"
-          value={input.language}
-          options={languageOptions}
-          onChange={(value) => updateField('language', value)}
-        />
-        <SelectField
-          label="현재 계절"
-          value={input.season}
-          options={seasonOptions}
-          onChange={(value) => updateField('season', value)}
-        />
-        <SelectField
-          label="목표 체험 시간"
-          value={input.estimatedTime}
-          options={timeOptions}
-          onChange={(value) => updateField('estimatedTime', value)}
-        />
+        <SelectField label="대상 식물" value={input.plantName} options={plantOptions} onChange={(value) => updateField('plantName', value)} />
+        <SelectField label="콘텐츠 유형" value={input.template} options={templateOptions} onChange={(value) => updateField('template', value)} />
+        <SelectField label="페이지 목적" value={input.purpose} options={purposeOptions} onChange={(value) => updateField('purpose', value)} />
+        <SelectField label="대상 관람객" value={input.audience} options={audienceOptions} onChange={(value) => updateField('audience', value)} />
+        <SelectField label="대상 언어" value={input.language} options={languageOptions} onChange={(value) => updateField('language', value)} />
+        <SelectField label="현재 계절" value={input.season} options={seasonOptions} onChange={(value) => updateField('season', value)} />
+        <SelectField label="목표 체험 시간" value={input.estimatedTime} options={timeOptions} onChange={(value) => updateField('estimatedTime', value)} />
       </div>
 
       <div className="setting-group">
         <p className="setting-title">현장 배포 설정</p>
-        <p className="setting-copy">QR, 키오스크, 모바일 코스처럼 실제 설치 환경에 맞춰 페이지 밀도와 상호작용을 조정합니다.</p>
+        <p className="setting-copy">단말기와 전시 환경에 맞게 콘텐츠 밀도와 인터랙션 방향을 조정합니다.</p>
       </div>
 
       <div className="form-grid">
         <SelectField
-          label="배포 용도"
+          label="배포 단말기"
           value={input.deploymentUse}
           options={deploymentOptions}
           onChange={(value) => updateField('deploymentUse', value)}
         />
         <SelectField
-          label="실제 현장"
+          label="현장 위치"
           value={input.fieldLocation}
           options={locationOptions}
           onChange={(value) => updateField('fieldLocation', value)}
@@ -194,7 +160,7 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
       </div>
 
       <CheckboxGroup
-        label="주요 설명 항목"
+        label="강조 콘텐츠"
         values={input.focusTopics}
         options={focusTopicOptions}
         onToggle={(value) => toggleListValue('focusTopics', value)}
@@ -211,7 +177,7 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
         <span>추가 요청사항</span>
         <textarea
           value={input.extraRequest}
-          placeholder="예: 기후위기 메시지를 포함하고 어린이가 따라 하기 쉬운 미션을 넣어주세요."
+          placeholder="예: 어린이 대상, 친근한 말투, 기후 위기 메시지를 자연스럽게 녹여주세요."
           onChange={(event) => updateField('extraRequest', event.target.value)}
         />
       </label>
@@ -219,15 +185,6 @@ export default function AdminPanel({ input, isLoading, onChange, onGenerate }: A
       <div className="button-row">
         <button className="primary-button" onClick={onGenerate} disabled={isLoading}>
           {isLoading ? '생성 중' : '페이지 생성'}
-        </button>
-        <button className="secondary-button" onClick={onGenerate} disabled={isLoading}>
-          다시 생성
-        </button>
-        <button className="secondary-button" type="button">
-          QR 보기
-        </button>
-        <button className="ghost-button" type="button">
-          승인 대기
         </button>
       </div>
     </section>
@@ -275,12 +232,8 @@ function CheckboxGroup<T extends string>({
       <legend>{label}</legend>
       <div className="chip-grid">
         {options.map((option) => (
-          <label key={option.value} className="check-chip">
-            <input
-              type="checkbox"
-              checked={values.includes(option.value)}
-              onChange={() => onToggle(option.value)}
-            />
+          <label className="check-chip" key={option.value}>
+            <input checked={values.includes(option.value)} type="checkbox" onChange={() => onToggle(option.value)} />
             <span>{option.label}</span>
           </label>
         ))}

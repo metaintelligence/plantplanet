@@ -27,8 +27,8 @@ export default function HomeDashboard({ plants, contents, generationJobs, onNavi
           <p className="eyebrow">HanGarden</p>
           <h1>생성형 AI 기반 식물해설 콘텐츠 관리자</h1>
           <p>
-            HanGarden은 수목원 식물 데이터와 관람객 맥락을 조합해 모바일, 키오스크, 정적 포스터 환경에 맞는
-            해설 콘텐츠를 생성하고 관리하는 데모 플랫폼입니다.
+            HanGarden은 수목원 식물 데이터와 관람객 맥락을 조합해 모바일, 키오스크, 정적 포스터 환경에 맞는 해설
+            콘텐츠를 생성하고 관리하는 데모 플랫폼입니다.
           </p>
         </div>
         <div className="intro-actions">
@@ -64,11 +64,7 @@ export default function HomeDashboard({ plants, contents, generationJobs, onNavi
           </div>
           <div className="plant-data-grid dashboard-scroll-list plant-scroll-list">
             {plants.map((plant) => (
-              <PlantDataCard
-                key={plant.id}
-                plant={plant}
-                onOpen={setSelectedPlant}
-              />
+              <PlantDataCard key={plant.id} plant={plant} onOpen={setSelectedPlant} />
             ))}
           </div>
         </div>
@@ -133,11 +129,11 @@ export default function HomeDashboard({ plants, contents, generationJobs, onNavi
                   <button className="primary-button" type="button" onClick={() => onRegenerate(job)}>
                     재생성 요청
                   </button>
-                ) : (
+                ) : job.status === 'completed' ? (
                   <button className="secondary-button" type="button" onClick={() => onNavigate(normalizeRoute(job.routePath))}>
                     페이지 열기
                   </button>
-                )}
+                ) : null}
               </article>
             ))}
           </div>

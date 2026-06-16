@@ -12,12 +12,7 @@ import {
   templateOptions,
   toneOptions
 } from '../data/contentOptions';
-import type {
-  ContentSettings,
-  GeneratedContent,
-  GeneratedSection,
-  PlantRecord
-} from '../types/content';
+import type { ContentSettings, GeneratedContent, GeneratedSection, PlantRecord } from '../types/content';
 
 export function createDefaultSettings(plantId = ''): ContentSettings {
   return {
@@ -48,21 +43,18 @@ export function generateContentFromSettings(
 ): GeneratedContent {
   const now = new Date().toISOString();
   const id = existing?.id ?? `content-${Date.now().toString(36)}`;
-  const title = buildTitle(settings, plant);
-  const sections = buildSections(settings, plant);
-  const settingsJson = JSON.stringify(settings, null, 2);
 
   return {
     id,
-    title,
-    summary: `${plant.koreanName}의 ${labelOf(templateOptions, settings.template)} 콘텐츠`,
+    title: buildTitle(settings, plant),
+    summary: `${plant.koreanName} ${labelOf(templateOptions, settings.template)} 콘텐츠`,
     status: existing?.status ?? 'draft',
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
     settings,
-    settingsJson,
+    settingsJson: JSON.stringify(settings, null, 2),
     routePath: `#/content/${id}`,
-    sections
+    sections: buildSections(settings, plant)
   };
 }
 
@@ -72,14 +64,15 @@ function buildTitle(settings: ContentSettings, plant: PlantRecord) {
     return contentName;
   }
 
-  const templateLabel = labelOf(templateOptions, settings.template);
   if (settings.template === 'mission') {
     return `${plant.koreanName} 관찰 미션`;
   }
+
   if (settings.template === 'storytelling') {
-    return `${plant.koreanName}가 들려주는 숲 이야기`;
+    return `${plant.koreanName} 이야기 산책`;
   }
-  return `${plant.koreanName} ${templateLabel}`;
+
+  return `${plant.koreanName} ${labelOf(templateOptions, settings.template)}`;
 }
 
 function buildSections(settings: ContentSettings, plant: PlantRecord): GeneratedSection[] {
@@ -88,26 +81,26 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
   const languageText = settings.languages.map((language) => labelOf(languageOptions, language)).join(', ');
   const audienceText = settings.audience.map((audience) => labelOf(audienceOptions, audience)).join(', ');
 
-  const commonSections: GeneratedSection[] = [
+  const overview: GeneratedSection[] = [
     {
       title: `${seasonText} 관찰 포인트`,
       body: plant.seasonHighlights[settings.season] || plant.seasonHighlights.auto
     },
     {
-      title: '생물 정보',
-      body: `${plant.scientificName} / ${plant.family}. ${plant.habitat}에서 잘 자라며 ${plant.size}까지 성장합니다.`,
+      title: '기본 정보',
+      body: `${plant.scientificName}, ${plant.family}. ${plant.habitat}에서 자라며 ${plant.size} 정도까지 성장합니다.`,
       items: plant.features
     },
     {
-      title: '생성 설정',
+      title: '생성 설정 요약',
       body: `${labelOf(purposeOptions, settings.purpose)} 목적의 ${labelOf(toneOptions, settings.tone)} 콘텐츠입니다.`,
       items: [
-        `대상: ${audienceText}`,
+        `대상 관람객: ${audienceText}`,
         `언어: ${languageText}`,
-        `배포 단말기: ${labelOf(deploymentLabelOptions, settings.deploymentUse)}`,
-        `현장: ${labelOf(fieldLocationOptions, settings.fieldLocation)}`,
-        `설명 항목: ${focusText}`,
-        `체험 시간: ${labelOf(estimatedTimeOptions, settings.estimatedTime)}`
+        `배포 단말: ${labelOf(deploymentLabelOptions, settings.deploymentUse)}`,
+        `현장 위치: ${labelOf(fieldLocationOptions, settings.fieldLocation)}`,
+        `강조 콘텐츠: ${focusText}`,
+        `예상 체험 시간: ${labelOf(estimatedTimeOptions, settings.estimatedTime)}`
       ]
     },
     {
@@ -116,52 +109,36 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
     }
   ];
 
-  if (settings.template === 'quiz') {
-    return [
-      commonSections[0],
-      {
-        title: '현장 퀴즈',
-        body: `${plant.koreanName}의 특징으로 맞는 것은 무엇일까요?`,
-        items: [plant.features[0], '꽃이 전혀 피지 않는다', '밤에만 잎이 자란다']
-      },
-      ...commonSections.slice(1)
-    ];
+  switch (settings.template) {
+    case 'quiz':
+      return [
+        overview[0],
+        {
+          title: '시작 퀴즈',
+          body: `${plant.koreanName}의 특징으로 가장 알맞은 것을 떠올려 보세요.`,
+          items: [plant.features[0], plant.features[1] ?? '잎과 줄기 관찰하기', plant.observationTips[0]]
+        },
+        ...overview.slice(1)
+      ];
+    case 'mission':
+      return [
+        {
+          title: '관찰 미션 시작',
+          body: `${plant.koreanName} 앞에서 멈춰 서서 아래 관찰 미션을 순서대로 수행해 보세요.`,
+          items: plant.observationTips
+        },
+        ...overview
+      ];
+    case 'storytelling':
+      return [
+        {
+          title: labelOf(storyScenarioOptions, settings.storyScenario ?? 'nameSecret'),
+          body: `${plant.koreanName}의 특징과 현장 분위기를 엮어 하나의 이야기 흐름으로 따라가도록 구성합니다.`
+        },
+        ...overview
+      ];
+    case 'intro':
+    default:
+      return overview;
   }
-
-  if (settings.template === 'mission') {
-    return [
-      {
-        title: '미션 시작',
-        body: `${plant.koreanName} 앞에서 30초 동안 멈추고, 아래 항목을 훼손 없이 관찰해보세요.`,
-        items: plant.observationTips
-      },
-      ...commonSections
-    ];
-  }
-
-  if (settings.template === 'checklist') {
-    return [
-      {
-        title: '관찰 체크리스트',
-        body: '아래 항목을 순서대로 확인하며 식물의 특징을 기록합니다.',
-        items: plant.observationTips
-      },
-      ...commonSections
-    ];
-  }
-
-  if (settings.template === 'storytelling') {
-    const scenario = settings.storyScenario
-      ? labelOf(storyScenarioOptions, settings.storyScenario)
-      : '식물의 하루';
-    return [
-      {
-        title: scenario,
-        body: `${plant.koreanName}는 ${plant.origin}에서 이어져 온 생물자원의 이야기를 품고 있습니다. 관람객은 오늘의 계절과 현장 맥락 속에서 이 식물의 시간을 따라가게 됩니다.`
-      },
-      ...commonSections
-    ];
-  }
-
-  return commonSections;
 }

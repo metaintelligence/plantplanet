@@ -16,7 +16,7 @@ const seasonLabels: Record<Season, string> = {
   summer: '여름',
   autumn: '가을',
   winter: '겨울',
-  auto: '대표 관찰 포인트'
+  auto: '기본 관찰 포인트'
 };
 
 export default function PlantDataCard({ plant, onOpen }: PlantDataCardProps) {

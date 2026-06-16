@@ -1,10 +1,10 @@
 import type {
-  DeploymentUse,
+  Audience,
   EstimatedTime,
   FeatureOption,
   FieldLocation,
   FocusTopic,
-  GenerateInput,
+  Language,
   PageConfig,
   PagePurpose,
   PlantName,
@@ -12,138 +12,167 @@ import type {
   TemplateType
 } from '../types/pageConfig';
 
+interface GenerateInput {
+  plantName: PlantName;
+  template: TemplateType;
+  purpose: PagePurpose;
+  audience: Audience;
+  language: Language;
+  season: Season;
+  estimatedTime: EstimatedTime;
+  deploymentUse: 'kiosk' | 'mobile' | 'staticPoster';
+  fieldLocation: FieldLocation;
+  focusTopics: FocusTopic[];
+  featureOptions: FeatureOption[];
+  extraRequest: string;
+}
+
 const plantFacts: Record<PlantName, { feature: string; habitat: string; risk: string; sensory: string }> = {
   구상나무: {
-    feature: '겨울에도 푸른 바늘잎과 단단한 솔방울',
-    habitat: '우리나라 높은 산',
-    risk: '기후변화로 서식지가 줄어드는 일',
-    sensory: '짙은 초록 바늘잎과 위로 선 솔방울'
+    feature: '보라빛 구과와 짧은 바늘잎이 특징입니다.',
+    habitat: '서늘한 고산 지대',
+    risk: '기후 변화로 서식지가 줄어들고 있습니다.',
+    sensory: '단단한 바늘잎과 곧게 선 구과'
   },
   미선나무: {
-    feature: '하얗고 향기로운 꽃과 부채 모양 열매',
-    habitat: '충북의 햇빛 좋은 숲 가장자리',
-    risk: '자생지가 훼손되는 일',
-    sensory: '은은한 향기와 작은 부채 같은 열매'
+    feature: '이른 봄에 은은한 향의 흰 꽃이 핍니다.',
+    habitat: '햇빛이 잘 드는 비탈과 가장자리',
+    risk: '자생지가 제한적이라 보전 가치가 큽니다.',
+    sensory: '부드러운 꽃향기와 가느다란 가지'
   },
   동백나무: {
-    feature: '겨울과 이른 봄에 피는 붉은 꽃',
-    habitat: '남쪽 바닷가 숲',
-    risk: '따뜻한 숲 환경이 달라지는 일',
-    sensory: '윤기 있는 잎과 바닥에 통째로 떨어지는 꽃'
+    feature: '겨울과 이른 봄에 붉은 꽃을 피웁니다.',
+    habitat: '남부 해안의 상록 숲',
+    risk: '기후와 생태 변화를 함께 관찰하기 좋습니다.',
+    sensory: '윤기 있는 잎과 도톰한 꽃잎'
   },
   왕벚나무: {
-    feature: '봄을 알리는 풍성한 연분홍 꽃',
-    habitat: '제주와 온대 숲',
-    risk: '병해충과 무분별한 훼손',
-    sensory: '가지 끝에 모여 피는 연분홍 꽃송이'
+    feature: '짧은 시기에 풍성한 꽃을 보여줍니다.',
+    habitat: '정원과 공원, 산책 동선 주변',
+    risk: '관람 수요가 높아 관리와 해설이 중요합니다.',
+    sensory: '밝은 꽃구름과 넓게 퍼진 수형'
   },
   금강초롱꽃: {
-    feature: '종처럼 아래를 향해 피는 보랏빛 꽃',
-    habitat: '깊은 산의 서늘한 숲',
-    risk: '희귀 식물을 함부로 채집하는 일',
-    sensory: '고개 숙인 종 모양 꽃과 차분한 보랏빛'
+    feature: '종 모양의 푸른빛 꽃이 아래로 늘어집니다.',
+    habitat: '서늘하고 그늘진 산지',
+    risk: '채집과 서식지 교란에 민감합니다.',
+    sensory: '차분한 보랏빛과 종 모양 실루엣'
   },
   산수국: {
-    feature: '가장자리 장식꽃과 계절에 따라 달라지는 꽃빛',
-    habitat: '습기 있는 숲길과 계곡 주변',
-    risk: '건조해지는 숲 환경',
-    sensory: '작은 꽃 주변을 둘러싼 장식꽃'
+    feature: '가장자리 장식꽃과 가운데 작은 꽃이 함께 보입니다.',
+    habitat: '습기가 있는 숲길과 계곡 가장자리',
+    risk: '여름철 수분 환경 변화를 함께 관찰하기 좋습니다.',
+    sensory: '겹겹의 꽃차례와 시원한 색감'
+  },
+  연꽃: {
+    feature: '넓은 잎과 물 위로 올라오는 꽃이 인상적입니다.',
+    habitat: '연못과 습지',
+    risk: '수질과 계절 변화의 영향을 크게 받습니다.',
+    sensory: '넓은 잎, 물결, 또렷한 꽃 중심부'
+  },
+  아카시아: {
+    feature: '하얀 꽃송이와 향이 두드러집니다.',
+    habitat: '공원과 길가, 햇볕이 좋은 곳',
+    risk: '곤충과 꽃의 관계를 설명하기 좋습니다.',
+    sensory: '달콤한 향과 길게 늘어진 꽃송이'
+  },
+  무궁화: {
+    feature: '여름부터 가을까지 차례로 새 꽃을 올립니다.',
+    habitat: '정원과 숲길 가장자리',
+    risk: '문화적 상징성과 관찰 포인트를 함께 다루기 좋습니다.',
+    sensory: '선명한 꽃잎과 중심부 무늬'
+  },
+  소나무: {
+    feature: '사계절 푸른 잎과 강한 수형이 특징입니다.',
+    habitat: '산지와 공원, 건조한 양지',
+    risk: '기후 적응과 전통 경관 이야기에 잘 어울립니다.',
+    sensory: '솔향, 거친 수피, 길게 모인 바늘잎'
+  },
+  단풍나무: {
+    feature: '계절에 따라 잎 색 변화가 뚜렷합니다.',
+    habitat: '계곡 주변과 정원, 산책길',
+    risk: '계절 변화 관찰에 적합한 대표 수종입니다.',
+    sensory: '얇은 잎맥과 강한 색 대비'
+  },
+  은행나무: {
+    feature: '부채꼴 잎과 가을 황금빛 잎이 잘 알려져 있습니다.',
+    habitat: '도심과 공원, 큰 길가',
+    risk: '도시 경관과 계절 경험을 연결하기 좋습니다.',
+    sensory: '부채 모양 잎과 강한 노란빛'
   }
 };
 
 const templateTitles: Record<TemplateType, string> = {
-  intro: '한눈에 만나는',
-  storytelling: '숲에서 들려오는',
-  quiz: '맞혀보는',
-  mission: '지켜라!',
-  checklist: '관찰 노트'
+  intro: '식물 소개',
+  storytelling: '이야기로 만나는',
+  quiz: '퀴즈로 보는',
+  mission: '관찰 미션'
 };
 
 const purposeTone: Record<PagePurpose, string> = {
-  general: '일반 관람객에게 식물의 특징을 쉽게 소개합니다.',
-  education: '학생과 어린이가 관찰하며 배울 수 있도록 문장을 짧게 구성합니다.',
-  experience: '현장에서 바로 따라 할 수 있는 미션과 관찰 행동을 중심에 둡니다.',
-  campaign: '생물다양성과 기후위기 메시지를 보전 가치와 함께 전합니다.',
-  promotion: '전시와 계절 행사의 매력을 짧고 선명하게 안내합니다.',
-  route: '다음 장소나 관련 식물로 자연스럽게 이동하도록 동선을 제안합니다.'
+  general: '핵심 특징을 빠르게 이해할 수 있게 정리합니다.',
+  education: '관찰과 학습 포인트가 분명하게 드러나야 합니다.',
+  experience: '직접 해보는 체험 흐름이 중심이 됩니다.',
+  campaign: '보전과 실천 메시지를 자연스럽게 녹입니다.',
+  promotion: '전시의 매력과 식물의 매력을 함께 보여줍니다.',
+  route: '다음 동선으로 이어지는 안내 흐름을 만듭니다.'
 };
 
-const seasonLabel: Record<Season, string> = {
+const labelMap = {
   spring: '봄',
   summer: '여름',
   autumn: '가을',
   winter: '겨울',
-  auto: '오늘'
-};
-
-const timeLabel: Record<EstimatedTime, string> = {
+  auto: '기본',
   '10sec': '10초',
   '30sec': '30초',
   '1min': '1분',
-  '3min': '3분'
-};
-
-const deploymentLabel: Record<DeploymentUse, string> = {
-  kiosk: '전시관 키오스크',
-  mobile: '모바일',
-  staticPoster: '정적 포스터'
-};
-
-const locationLabel: Record<FieldLocation, string> = {
+  '3min': '3분',
   greenhouse: '온실',
   garden: '정원',
   outdoorGarden: '야외 정원',
   forestTrail: '숲길',
-  park: '공원'
-};
-
-const focusLabel: Record<FocusTopic, string> = {
-  appearance: '생김새',
+  park: '공원',
+  appearance: '외형',
   ecology: '생태',
   nameOrigin: '이름 유래',
   cultureHistory: '문화/역사',
   usage: '활용',
   conservation: '보전 가치',
-  comparison: '비교 학습',
-  funFacts: '재미 요소'
-};
-
-const featureLabel: Record<FeatureOption, string> = {
-  voiceGuide: '음성 해설',
-  qaAi: '질문답변 AI',
-  similarPlantCards: '유사식물카드'
-};
+  comparison: '비교 관찰',
+  funFacts: '흥미 요소',
+  voiceGuide: '음성 가이드',
+  qaAi: '질문응답 AI',
+  similarPlantCards: '유사 식물 카드'
+} as const;
 
 export function generateStaticPageConfig(input: GenerateInput): PageConfig {
   const fact = plantFacts[input.plantName];
-  const focusText = input.focusTopics.map((topic) => focusLabel[topic]).join(', ') || '생김새';
-  const title =
-    input.template === 'mission'
-      ? `${input.plantName}를 지켜라!`
-      : `${templateTitles[input.template]} ${input.plantName}`;
+  const focusText = input.focusTopics.map((topic) => labelMap[topic]).join(', ') || '외형';
+  const title = input.template === 'mission' ? `${input.plantName} 관찰 미션` : `${templateTitles[input.template]} ${input.plantName}`;
 
   const sections: PageConfig['sections'] = [
     {
       type: 'hero',
-      title: `${seasonLabel[input.season]}에 만나는 ${input.plantName}`,
-      body: `${locationLabel[input.fieldLocation]}에서 ${fact.sensory}을 관찰해보세요. ${timeLabel[input.estimatedTime]} 안에 핵심만 이해할 수 있게 구성했습니다.`
+      title: `${labelMap[input.season]}에 만나는 ${input.plantName}`,
+      body: `${labelMap[input.fieldLocation]}에서 ${fact.sensory}를 중심으로 관찰해보세요. ${labelMap[input.estimatedTime]} 안에 핵심을 이해할 수 있도록 구성합니다.`
+    },
+    {
+      type: 'info',
+      title: purposeTone[input.purpose],
+      body: `${input.plantName}는 ${fact.habitat}에서 잘 보이며, ${fact.feature}`
     },
     {
       type: 'deployment',
       title: '현장 배포 설정',
       items: [
-        deploymentLabel[input.deploymentUse],
-        locationLabel[input.fieldLocation],
-        `주요 설명 항목: ${focusText}`,
+        input.deploymentUse,
+        labelMap[input.fieldLocation],
+        `강조 콘텐츠: ${focusText}`,
         input.featureOptions.length
-          ? `추가 기능: ${input.featureOptions.map((option) => featureLabel[option]).join(', ')}`
+          ? `추가 기능: ${input.featureOptions.map((option) => labelMap[option]).join(', ')}`
           : '추가 기능 없음'
       ]
-    },
-    {
-      type: 'info',
-      title: '콘텐츠 방향',
-      body: `${purposeTone[input.purpose]} ${input.plantName}는 ${fact.habitat}에서 자라며, ${fact.feature}이 특징입니다.`
     }
   ];
 
@@ -151,15 +180,15 @@ export function generateStaticPageConfig(input: GenerateInput): PageConfig {
     sections.push({
       type: 'story',
       title: `${input.plantName}의 이야기`,
-      body: `${input.plantName}가 사는 환경이 달라지면 ${fact.risk}이 커질 수 있습니다. 오늘의 관찰은 이 식물을 오래 지키기 위한 첫 번째 기록입니다.`
+      body: `${fact.risk}라는 맥락을 바탕으로, 오늘 이 식물을 어떻게 바라보면 좋을지 이야기 흐름으로 풀어냅니다.`
     });
   }
 
   if (input.template === 'quiz' || input.template === 'mission' || input.estimatedTime !== '10sec') {
     sections.push({
       type: 'quiz',
-      question: `${input.plantName}를 관찰할 때 가장 주목할 특징은 무엇일까요?`,
-      options: [fact.feature, '잎이 전혀 없다는 점', '밤에만 자란다는 점'],
+      question: `${input.plantName}의 특징으로 가장 알맞은 것은 무엇일까요?`,
+      options: [fact.feature, '꽃이 전혀 피지 않는다', '물가에서만 자란다'],
       answer: fact.feature
     });
   }
@@ -168,27 +197,18 @@ export function generateStaticPageConfig(input: GenerateInput): PageConfig {
     sections.push({
       type: 'mission',
       title: '관찰 미션',
-      body: `${input.plantName} 주변에서 ${fact.sensory}을 찾아보고, 훼손하지 않고 사진이나 메모로만 기록해보세요.`
+      body: `${fact.sensory}를 직접 찾아보고, 손대지 않은 채 눈으로만 기록해 보세요.`
     });
-  }
-
-  if (input.template === 'checklist' || input.estimatedTime === '3min') {
     sections.push({
       type: 'checklist',
-      title: '관찰 체크리스트',
+      title: '관찰 미션 체크',
       items: [
-        `${input.plantName}의 잎 또는 꽃 모양 확인하기`,
-        `자라는 장소가 ${fact.habitat}와 어떻게 닮았는지 살피기`,
-        '식물을 만지거나 꺾지 않고 사진이나 메모로 남기기'
+        `${input.plantName}의 대표 특징 확인하기`,
+        `${fact.habitat}와 식물의 관계 떠올려보기`,
+        '채집하지 않고 눈으로만 관찰하기'
       ]
     });
   }
-
-  sections.push({
-    type: 'similarPlants',
-    title: '함께 보면 좋은 식물',
-    plants: Object.keys(plantFacts).filter((plant) => plant !== input.plantName).slice(0, 3)
-  });
 
   if (input.extraRequest.trim()) {
     sections.push({
@@ -203,7 +223,7 @@ export function generateStaticPageConfig(input: GenerateInput): PageConfig {
     plantName: input.plantName,
     template: input.template,
     title,
-    subtitle: `${fact.risk}을 이해하는 ${timeLabel[input.estimatedTime]} 맞춤형 해설 페이지`,
+    subtitle: `${fact.risk}를 이해하는 ${labelMap[input.estimatedTime]} 안내 페이지`,
     audience: input.audience,
     language: input.language,
     season: input.season,

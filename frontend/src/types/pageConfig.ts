@@ -4,24 +4,21 @@ export type PlantName =
   | '동백나무'
   | '왕벚나무'
   | '금강초롱꽃'
-  | '산수국';
+  | '산수국'
+  | '연꽃'
+  | '아카시아'
+  | '무궁화'
+  | '소나무'
+  | '단풍나무'
+  | '은행나무';
 
-export type TemplateType = 'intro' | 'storytelling' | 'quiz' | 'mission' | 'checklist';
-export type PagePurpose =
-  | 'general'
-  | 'education'
-  | 'experience'
-  | 'campaign'
-  | 'promotion'
-  | 'route';
+export type TemplateType = 'intro' | 'storytelling' | 'quiz' | 'mission';
+export type PagePurpose = 'general' | 'education' | 'experience' | 'campaign' | 'promotion' | 'route';
 export type Audience = 'children' | 'adults' | 'foreigners';
 export type Language = 'ko' | 'en' | 'ja' | 'zh';
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'auto';
 export type EstimatedTime = '10sec' | '30sec' | '1min' | '3min';
-export type DeploymentUse =
-  | 'kiosk'
-  | 'mobile'
-  | 'staticPoster';
+export type DeploymentUse = 'kiosk' | 'mobile' | 'staticPoster';
 export type FieldLocation = 'greenhouse' | 'garden' | 'outdoorGarden' | 'forestTrail' | 'park';
 export type FocusTopic =
   | 'appearance'
@@ -50,32 +47,11 @@ export interface GenerateInput {
 }
 
 export type Section =
-  | {
-      type: 'hero' | 'info' | 'story' | 'mission';
-      title: string;
-      body: string;
-    }
-  | {
-      type: 'quiz';
-      question: string;
-      options: string[];
-      answer: string;
-    }
-  | {
-      type: 'checklist';
-      title: string;
-      items: string[];
-    }
-  | {
-      type: 'similarPlants';
-      title: string;
-      plants: string[];
-    }
-  | {
-      type: 'deployment';
-      title: string;
-      items: string[];
-    };
+  | { type: 'hero' | 'info' | 'story' | 'mission'; title: string; body: string }
+  | { type: 'quiz'; question: string; options: string[]; answer: string }
+  | { type: 'checklist'; title: string; items: string[] }
+  | { type: 'similarPlants'; title: string; plants: string[] }
+  | { type: 'deployment'; title: string; items: string[] };
 
 export interface PageConfig {
   id: string;

@@ -1,6 +1,5 @@
 import type { GeneratedContent, PlantRecord } from '../types/content';
 import { generatedLayoutRegistry } from '../generated/generatedLayoutRegistry';
-import DefaultLayoutChecklistPage from './DefaultLayoutChecklistPage';
 import DefaultLayoutIntroPage from './DefaultLayoutIntroPage';
 import DefaultLayoutMissionPage from './DefaultLayoutMissionPage';
 import DefaultLayoutQuizPage from './DefaultLayoutQuizPage';
@@ -25,8 +24,6 @@ export default function ContentPageRenderer({
       return <DefaultLayoutQuizPage content={content} plant={plant} />;
     case 'mission':
       return <DefaultLayoutMissionPage content={content} plant={plant} />;
-    case 'checklist':
-      return <DefaultLayoutChecklistPage content={content} plant={plant} />;
     case 'intro':
     default:
       return <DefaultLayoutIntroPage content={content} plant={plant} />;
