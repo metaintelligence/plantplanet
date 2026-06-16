@@ -10,6 +10,8 @@
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "build": "npm run build -w backend && npm run build -w frontend",
     "start": "npm run start -w backend",
+    "start:public": "powershell -ExecutionPolicy Bypass -File scripts/start-public.ps1",
+    "redirect:update": "powershell -ExecutionPolicy Bypass -File scripts/update-redirect-target.ps1",
     "generate:page": "tsx scripts/generate-page.ts",
     "generate:layout": "tsx scripts/generate-layout-page.ts"
   },

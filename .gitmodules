@@ -1,0 +1,3 @@
+[submodule "hangarden"]
+	path = hangarden
+	url = https://github.com/metaintelligence/hangarden.git
