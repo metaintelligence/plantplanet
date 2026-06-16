@@ -458,7 +458,7 @@ export default function App() {
           />
         );
       case 'exhibition':
-        return <ExhibitionPage siteId={route.id} />;
+        return <ExhibitionPage siteId={route.id} contents={contents} plants={plants} />;
       case 'home':
       default:
         return (
