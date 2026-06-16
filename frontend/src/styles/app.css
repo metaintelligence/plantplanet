@@ -1213,7 +1213,8 @@ button:disabled {
 
 .device-preview-viewport {
   width: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .device-preview-frame.kiosk {
@@ -1328,7 +1329,8 @@ button:disabled {
 
 .device-preview-canvas {
   min-width: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid #cbd8d0;
   border-radius: 8px;
   background: #eef1ef;
@@ -1348,7 +1350,8 @@ button:disabled {
   border: 0;
   border-radius: 18px;
   background: #0e1311;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.06),
     inset 0 0 0 10px rgba(0, 0, 0, 0.14);
@@ -1434,7 +1437,8 @@ button:disabled {
   margin: 0 auto;
   display: grid;
   place-items: center;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid rgba(203, 216, 208, 0.4);
   border-radius: 30px;
   background: #eef1ef;
@@ -2304,6 +2308,10 @@ button:disabled {
   transition: none;
 }
 
+.exhibition-marker-item.dragging {
+  transition: none;
+}
+
 .exhibition-marker {
   position: relative;
   z-index: 2;
@@ -2315,7 +2323,7 @@ button:disabled {
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.92),
     0 8px 18px rgba(120, 20, 20, 0.28);
-  cursor: pointer;
+  cursor: grab;
   pointer-events: auto;
   transition:
     transform 160ms ease,
@@ -2328,6 +2336,12 @@ button:disabled {
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.96),
     0 12px 22px rgba(120, 20, 20, 0.32);
+}
+
+.exhibition-marker:active,
+.exhibition-marker-item.dragging .exhibition-marker,
+.exhibition-marker-item.dragging .exhibition-marker-mini-card {
+  cursor: grabbing;
 }
 
 .exhibition-marker-item.assigned .exhibition-marker {
@@ -2503,6 +2517,9 @@ button:disabled {
 .marker-content-list {
   display: grid;
   gap: 12px;
+  max-height: 372px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .marker-content-option {

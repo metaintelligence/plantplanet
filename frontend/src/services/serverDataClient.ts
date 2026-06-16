@@ -1,4 +1,4 @@
-import type { ContentStatus, GeneratedContent } from '../types/content';
+import type { GeneratedContent } from '../types/content';
 import type { LayoutGenerationJob } from '../types/generationJob';
 
 export async function fetchContents() {
@@ -9,15 +9,6 @@ export async function saveContentToServer(content: GeneratedContent) {
   return requestJson<GeneratedContent[]>(`/api/contents/${encodeURIComponent(content.id)}`, {
     method: 'PUT',
     body: JSON.stringify(content)
-  });
-}
-
-export async function updateContentStatus(contentId: string, status: ContentStatus) {
-  return requestJson<GeneratedContent[]>(`/api/contents/${encodeURIComponent(contentId)}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      status
-    })
   });
 }
 

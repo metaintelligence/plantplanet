@@ -10,10 +10,9 @@ import {
   deleteContentFromServer,
   fetchContents,
   fetchGenerationJobs,
-  saveContentToServer,
-  updateContentStatus
+  saveContentToServer
 } from './services/serverDataClient';
-import type { ContentStatus, GeneratedContent, MockDatabase, PlantRecord } from './types/content';
+import type { GeneratedContent, MockDatabase, PlantRecord } from './types/content';
 import type { LayoutGenerationJob } from './types/generationJob';
 
 type Route =
@@ -363,18 +362,6 @@ export default function App() {
     }
   };
 
-  const changeStatus = async (content: GeneratedContent, status: ContentStatus) => {
-    try {
-      setContents(await updateContentStatus(content.id, status));
-    } catch (error) {
-      pushToast({
-        tone: 'error',
-        title: '상태 변경 실패',
-        message: error instanceof Error ? error.message : '콘텐츠 상태를 변경하지 못했습니다.'
-      });
-    }
-  };
-
   const startEdit = (content: GeneratedContent) => {
     if (activeGenerationJob) {
       showCreateBlockedToast();
@@ -443,9 +430,7 @@ export default function App() {
             plants={plants}
             onCreate={() => navigate('/create')}
             onOpen={(contentId) => navigate(`/content/${contentId}`)}
-            onEdit={startEdit}
             onDelete={deleteContent}
-            onChangeStatus={changeStatus}
           />
         );
       case 'content':

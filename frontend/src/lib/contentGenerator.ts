@@ -48,7 +48,7 @@ export function generateContentFromSettings(
     id,
     title: buildTitle(settings, plant),
     summary: `${plant.koreanName} ${labelOf(templateOptions, settings.template)} 콘텐츠`,
-    status: existing?.status ?? 'draft',
+    status: 'published',
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
     settings,

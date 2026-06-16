@@ -16,7 +16,7 @@ const retryableStatuses = new Set<LayoutGenerationJobStatus>(['failed', 'timeout
 
 export default function HomeDashboard({ plants, contents, generationJobs, onNavigate, onRegenerate }: HomeDashboardProps) {
   const [selectedPlant, setSelectedPlant] = useState<PlantRecord | null>(null);
-  const publishedCount = contents.filter((content) => content.status === 'published').length;
+  const publishedCount = contents.length;
   const activeJobCount = generationJobs.filter((job) => activeStatuses.has(job.status)).length;
   const activeJob = generationJobs.find((job) => activeStatuses.has(job.status));
 
@@ -86,7 +86,7 @@ export default function HomeDashboard({ plants, contents, generationJobs, onNavi
               {contents.map((content) => (
                 <button key={content.id} type="button" onClick={() => onNavigate(`/content/${content.id}`)}>
                   <strong>{content.title}</strong>
-                  <span>{content.status === 'published' ? '게시됨' : '초안'}</span>
+                  <span>게시됨</span>
                 </button>
               ))}
             </div>

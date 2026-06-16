@@ -49,6 +49,7 @@ export default function ExhibitionPage({ siteId, contents, plants }: ExhibitionP
       <section className="exhibition-image-stage" aria-label="전시공간 편집 영역">
         {imageSrc ? (
           <ExhibitionMapViewer
+            siteId={siteId}
             imageSrc={imageSrc}
             imageAlt={site?.name ?? '전시공간 도식'}
             contents={contents}
@@ -63,11 +64,13 @@ export default function ExhibitionPage({ siteId, contents, plants }: ExhibitionP
 }
 
 function ExhibitionMapViewer({
+  siteId,
   imageSrc,
   imageAlt,
   contents,
   plants
 }: {
+  siteId: string;
   imageSrc: string;
   imageAlt: string;
   contents: GeneratedContent[];
@@ -80,9 +83,12 @@ function ExhibitionMapViewer({
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [draggedMarkerId, setDraggedMarkerId] = useState<number | null>(null);
   const [activeMarkerId, setActiveMarkerId] = useState<number | null>(null);
   const [selectedContentId, setSelectedContentId] = useState<string | null>(null);
   const dragStateRef = useRef<{ pointerId: number; start: Point; origin: Point } | null>(null);
+  const markerDragRef = useRef<{ pointerId: number; markerId: number; moved: boolean } | null>(null);
+  const skipNextMarkerPersistRef = useRef(true);
   const nextMarkerIdRef = useRef(1);
   const initializedRef = useRef(false);
   const IMAGE_FRAME_EXTRA = 2;
@@ -166,11 +172,50 @@ function ExhibitionMapViewer({
     [activeMarkerId, markers]
   );
 
+  useEffect(() => {
+    skipNextMarkerPersistRef.current = true;
+    const storedMarkers = readMarkersFromCookie(siteId);
+    nextMarkerIdRef.current = storedMarkers.reduce((maxId, marker) => Math.max(maxId, marker.id), 0) + 1;
+    setMarkers(storedMarkers);
+    setActiveMarkerId(null);
+    setSelectedContentId(null);
+  }, [siteId]);
+
+  useEffect(() => {
+    if (skipNextMarkerPersistRef.current) {
+      skipNextMarkerPersistRef.current = false;
+      return;
+    }
+
+    writeMarkersToCookie(siteId, markers);
+  }, [markers, siteId]);
+
   const activeMarkerContent = activeMarker?.contentId ? contentLookup.get(activeMarker.contentId) ?? null : null;
 
   useEffect(() => {
     setSelectedContentId(activeMarkerContent?.id ?? null);
   }, [activeMarkerContent?.id]);
+
+  useEffect(() => {
+    const validContentIds = new Set(contents.map((content) => content.id));
+
+    setMarkers((current) => {
+      let didChange = false;
+      const next = current.map((marker) => {
+        if (marker.contentId && !validContentIds.has(marker.contentId)) {
+          didChange = true;
+          return {
+            ...marker,
+            contentId: null
+          };
+        }
+
+        return marker;
+      });
+
+      return didChange ? next : current;
+    });
+  }, [contents]);
 
   const openMarkerDialog = (markerId: number) => {
     const marker = markers.find((item) => item.id === markerId);
@@ -184,6 +229,10 @@ function ExhibitionMapViewer({
   };
 
   const handleWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+    if (draggedMarkerId !== null) {
+      return;
+    }
+
     if (!naturalSize.width || !naturalSize.height) {
       return;
     }
@@ -212,6 +261,10 @@ function ExhibitionMapViewer({
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (draggedMarkerId !== null) {
+      return;
+    }
+
     if (!naturalSize.width || !naturalSize.height) {
       return;
     }
@@ -228,6 +281,10 @@ function ExhibitionMapViewer({
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (draggedMarkerId !== null) {
+      return;
+    }
+
     const dragState = dragStateRef.current;
     if (!dragState || dragState.pointerId !== event.pointerId) {
       return;
@@ -241,6 +298,10 @@ function ExhibitionMapViewer({
   };
 
   const finishDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (draggedMarkerId !== null) {
+      return;
+    }
+
     const dragState = dragStateRef.current;
     if (!dragState || dragState.pointerId !== event.pointerId) {
       return;
@@ -331,6 +392,82 @@ function ExhibitionMapViewer({
     closeMarkerDialog();
   };
 
+  const clampMarkerCoordinates = (imageX: number, imageY: number) => ({
+    x: Math.min(naturalSize.width, Math.max(0, imageX)),
+    y: Math.min(naturalSize.height, Math.max(0, imageY))
+  });
+
+  const updateMarkerPositionFromPointer = (markerId: number, clientX: number, clientY: number) => {
+    const viewport = viewportRef.current;
+    if (!viewport || !naturalSize.width || !naturalSize.height) {
+      return;
+    }
+
+    const rect = viewport.getBoundingClientRect();
+    const localX = clientX - rect.left;
+    const localY = clientY - rect.top;
+    const nextPosition = clampMarkerCoordinates(
+      (localX - pan.x) / zoom - IMAGE_FRAME_PADDING,
+      (localY - pan.y) / zoom - IMAGE_FRAME_PADDING
+    );
+
+    setMarkers((current) =>
+      current.map((marker) => (marker.id === markerId ? { ...marker, ...nextPosition } : marker))
+    );
+  };
+
+  const handleMarkerPointerDown = (markerId: number, event: ReactPointerEvent<HTMLElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    markerDragRef.current = {
+      pointerId: event.pointerId,
+      markerId,
+      moved: false
+    };
+    setDraggedMarkerId(markerId);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleMarkerPointerMove = (markerId: number, event: ReactPointerEvent<HTMLElement>) => {
+    const markerDrag = markerDragRef.current;
+    if (!markerDrag || markerDrag.pointerId !== event.pointerId || markerDrag.markerId !== markerId) {
+      return;
+    }
+
+    markerDrag.moved = true;
+    updateMarkerPositionFromPointer(markerId, event.clientX, event.clientY);
+  };
+
+  const handleMarkerPointerUp = (markerId: number, event: ReactPointerEvent<HTMLElement>) => {
+    const markerDrag = markerDragRef.current;
+    if (!markerDrag || markerDrag.pointerId !== event.pointerId || markerDrag.markerId !== markerId) {
+      return;
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+    updateMarkerPositionFromPointer(markerId, event.clientX, event.clientY);
+
+    if (!markerDrag.moved) {
+      openMarkerDialog(markerId);
+    }
+
+    markerDragRef.current = null;
+    setDraggedMarkerId(null);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
+  const handleMarkerPointerCancel = (markerId: number, event: ReactPointerEvent<HTMLElement>) => {
+    const markerDrag = markerDragRef.current;
+    if (!markerDrag || markerDrag.pointerId !== event.pointerId || markerDrag.markerId !== markerId) {
+      return;
+    }
+
+    markerDragRef.current = null;
+    setDraggedMarkerId(null);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
   const imageCardStyle = naturalSize.width
     ? ({
         width: `${naturalSize.width + IMAGE_FRAME_EXTRA}px`,
@@ -365,7 +502,6 @@ function ExhibitionMapViewer({
                   setNaturalSize({ width: naturalWidth, height: naturalHeight });
                   setZoom(1);
                   setPan({ x: 0, y: 0 });
-                  setMarkers([]);
                   setActiveMarkerId(null);
                 }}
               />
@@ -380,7 +516,9 @@ function ExhibitionMapViewer({
               return (
                 <div
                   key={marker.id}
-                  className={`exhibition-marker-item ${assignedContent ? 'assigned' : ''}`}
+                  className={`exhibition-marker-item ${assignedContent ? 'assigned' : ''} ${
+                    draggedMarkerId === marker.id ? 'dragging' : ''
+                  }`}
                   style={
                     {
                       left: `${pan.x + (marker.x + IMAGE_FRAME_PADDING) * zoom}px`,
@@ -417,13 +555,10 @@ function ExhibitionMapViewer({
                     type="button"
                     className="exhibition-marker"
                     aria-label={assignedContent ? `${assignedContent.title} 마커 설정` : '새 마커 설정'}
-                    onPointerDown={(event) => {
-                      event.stopPropagation();
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openMarkerDialog(marker.id);
-                    }}
+                    onPointerDown={(event) => handleMarkerPointerDown(marker.id, event)}
+                    onPointerMove={(event) => handleMarkerPointerMove(marker.id, event)}
+                    onPointerUp={(event) => handleMarkerPointerUp(marker.id, event)}
+                    onPointerCancel={(event) => handleMarkerPointerCancel(marker.id, event)}
                   />
                 </div>
               );
@@ -513,4 +648,69 @@ function ExhibitionMapViewer({
       ) : null}
     </>
   );
+}
+
+function getMarkerCookieName(siteId: string) {
+  return `hangarden_markers_${siteId}`;
+}
+
+function readMarkersFromCookie(siteId: string): Marker[] {
+  if (typeof document === 'undefined') {
+    return [];
+  }
+
+  const cookieName = getMarkerCookieName(siteId);
+  const cookieEntry = document.cookie
+    .split('; ')
+    .find((entry) => entry.startsWith(`${cookieName}=`));
+
+  if (!cookieEntry) {
+    return [];
+  }
+
+  try {
+    const rawValue = decodeURIComponent(cookieEntry.slice(cookieName.length + 1));
+    const parsed = JSON.parse(rawValue) as Array<Partial<Marker>>;
+
+    return parsed.flatMap((marker) => {
+      if (
+        typeof marker.id !== 'number' ||
+        typeof marker.x !== 'number' ||
+        typeof marker.y !== 'number'
+      ) {
+        return [];
+      }
+
+      return [
+        {
+          id: marker.id,
+          x: marker.x,
+          y: marker.y,
+          contentId: typeof marker.contentId === 'string' ? marker.contentId : null
+        }
+      ];
+    });
+  } catch {
+    return [];
+  }
+}
+
+function writeMarkersToCookie(siteId: string, markers: Marker[]) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  const cookieName = getMarkerCookieName(siteId);
+  const serialized = encodeURIComponent(
+    JSON.stringify(
+      markers.map((marker) => ({
+        id: marker.id,
+        x: marker.x,
+        y: marker.y,
+        contentId: marker.contentId
+      }))
+    )
+  );
+
+  document.cookie = `${cookieName}=${serialized}; path=/; max-age=31536000; samesite=lax`;
 }

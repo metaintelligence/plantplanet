@@ -24,6 +24,7 @@ type PreviewZoomMode = 'fit' | '0.5' | '0.75' | '1';
 
 interface ScaledPreviewConfig {
   frameWidth: number;
+  frameHeight: number;
   screenWidth: number;
   screenHeight: number;
   stageWidth: number;
@@ -209,7 +210,6 @@ function DevicePreviewFrame({
   const scaledConfig = scaledPreviewConfigs[device];
   const previewScale = previewZoomMode === 'fit' ? fitDeviceScale : Number(previewZoomMode);
   const usesScaledDeviceFrame = Boolean(scaledConfig);
-  const stageScale = scaledConfig ? scaledConfig.screenWidth / scaledConfig.stageWidth : previewScale;
   const frameScale = usesScaledDeviceFrame ? previewScale : 1;
 
   useEffect(() => {
@@ -223,7 +223,11 @@ function DevicePreviewFrame({
     }
 
     const updateFrameMetrics = () => {
-      const nextFitDeviceScale = Math.min(1, viewport.clientWidth / scaledConfig.frameWidth);
+      const nextFitDeviceScale = Math.min(
+        1,
+        viewport.clientWidth / scaledConfig.frameWidth,
+        viewport.clientHeight > 0 ? viewport.clientHeight / scaledConfig.frameHeight : 1
+      );
       setFitDeviceScale(Number.isFinite(nextFitDeviceScale) && nextFitDeviceScale > 0 ? nextFitDeviceScale : 1);
     };
 
@@ -252,14 +256,15 @@ function DevicePreviewFrame({
     ? ({
         width: `${scaledConfig.stageWidth}px`,
         height: `${scaledConfig.stageHeight}px`,
-        transform: `scale(${stageScale})`,
-        transformOrigin: 'top left'
+        transform: 'none'
       } as CSSProperties)
     : undefined;
 
   const frameStyle =
-    usesScaledDeviceFrame
+    scaledConfig
       ? ({
+          width: `${scaledConfig.frameWidth}px`,
+          minWidth: `${scaledConfig.frameWidth}px`,
           zoom: frameScale
         } as CSSProperties)
       : undefined;
@@ -351,16 +356,18 @@ const previewZoomOptions: { label: string; value: PreviewZoomMode }[] = [
 
 const scaledPreviewConfigs: Partial<Record<PreviewDevice, ScaledPreviewConfig>> = {
   kiosk: {
-    frameWidth: 1560,
-    screenWidth: 1524,
-    screenHeight: 857.25,
+    frameWidth: 1956,
+    frameHeight: 1120,
+    screenWidth: 1920,
+    screenHeight: 1080,
     stageWidth: 1920,
     stageHeight: 1080
   },
   mobile: {
-    frameWidth: 560,
-    screenWidth: 532,
-    screenHeight: 1152.6667,
+    frameWidth: 1108,
+    frameHeight: 2380,
+    screenWidth: 1080,
+    screenHeight: 2340,
     stageWidth: 1080,
     stageHeight: 2340
   }
