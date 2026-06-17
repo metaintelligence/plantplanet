@@ -8,6 +8,7 @@ import type {
   Language,
   LayoutId,
   PagePurpose,
+  PlantCategory,
   Season,
   StoryScenario,
   TemplateType,
@@ -24,12 +25,12 @@ export const templateOptions: Option<TemplateType>[] = [
   {
     value: 'intro',
     label: '식물 소개',
-    description: '핵심 정보와 관찰 포인트를 빠르게 이해할 수 있는 소개형 페이지입니다.'
+    description: '대상 식물의 핵심 정보와 관찰 포인트를 간결하게 전달하는 소개형 페이지입니다.'
   },
   {
     value: 'storytelling',
     label: '스토리텔링',
-    description: '식물 소개를 다양한 이야기 흐름으로 풀어나가는 페이지입니다.'
+    description: '식물 소개를 다양한 스토리 흐름으로 풀어내는 페이지입니다.'
   },
   {
     value: 'quiz',
@@ -39,7 +40,7 @@ export const templateOptions: Option<TemplateType>[] = [
   {
     value: 'mission',
     label: '관찰 미션',
-    description: '현장에서 바로 수행할 수 있는 관찰 과제와 체크 포인트를 함께 제시합니다.'
+    description: '현장에서 바로 수행할 수 있는 관찰 과제를 중심으로 구성하는 페이지입니다.'
   }
 ];
 
@@ -70,7 +71,7 @@ export const seasonOptions: Option<Season>[] = [
   { value: 'summer', label: '여름' },
   { value: 'autumn', label: '가을' },
   { value: 'winter', label: '겨울' },
-  { value: 'auto', label: '자동' }
+  { value: 'auto', label: '기본 관찰 포인트' }
 ];
 
 export const estimatedTimeOptions: Option<EstimatedTime>[] = [
@@ -84,17 +85,17 @@ export const deploymentOptions: Option<DeploymentUse>[] = [
   {
     value: 'kiosk',
     label: '키오스크',
-    description: '상호작용 가능한 FHD 전시 디스플레이입니다. 스크롤 없이 한 화면 안에서 경험이 끝나야 합니다.'
+    description: '상호작용이 가능한 FHD 디스플레이 환경입니다. 스크롤 없이 한 화면 구성을 우선합니다.'
   },
   {
     value: 'mobile',
     label: '모바일',
-    description: '상호작용 가능한 모바일 환경입니다. 세로 스크롤을 사용할 수 있습니다.'
+    description: '상호작용이 가능한 모바일 환경입니다. 세로 스크롤 사용이 가능합니다.'
   },
   {
     value: 'staticPoster',
     label: '정적 포스터',
-    description: '한 장의 포스터처럼 보이는 정적 페이지입니다. 상호작용 없이 한 화면 안에 완결되어야 합니다.'
+    description: '상호작용 없이 한 페이지 안에 정보를 담는 정적 포스터형 페이지입니다.'
   }
 ];
 
@@ -104,12 +105,12 @@ export const layoutOptions: Option<LayoutId>[] = [
   {
     value: 'generated',
     label: '생성형AI 레이아웃',
-    description: '설정값과 목업 DB를 바탕으로 Codex CLI가 새 React 페이지를 생성합니다.'
+    description: '설정값과 식물 DB를 바탕으로 Codex CLI가 새 React 페이지를 생성합니다.'
   },
   {
     value: 'default',
     label: '기본 레이아웃',
-    description: '생성형AI를 사용하지 않고 템플릿 기본 레이아웃을 재사용합니다.'
+    description: '생성형AI를 사용하지 않고 유형별 기본 레이아웃을 재사용합니다.'
   }
 ];
 
@@ -122,7 +123,7 @@ export const fieldLocationOptions: Option<FieldLocation>[] = [
 ];
 
 export const focusTopicOptions: Option<FocusTopic>[] = [
-  { value: 'appearance', label: '외형' },
+  { value: 'appearance', label: '형태' },
   { value: 'ecology', label: '생태' },
   { value: 'nameOrigin', label: '이름 유래' },
   { value: 'cultureHistory', label: '문화/역사' },
@@ -133,7 +134,7 @@ export const focusTopicOptions: Option<FocusTopic>[] = [
 ];
 
 export const toneOptions: Option<Tone>[] = [
-  { value: 'friendly', label: '친절한 해설체' },
+  { value: 'friendly', label: '친근한 해설형' },
   { value: 'fairytale', label: '동화/캐릭터형' },
   { value: 'museum', label: '전시 해설형' },
   { value: 'emotional', label: '감성 스토리형' },
@@ -143,7 +144,7 @@ export const toneOptions: Option<Tone>[] = [
 
 export const featureOptions: Option<FeatureOption>[] = [
   { value: 'voiceGuide', label: '음성 가이드' },
-  { value: 'qaAi', label: '질문응답 AI' },
+  { value: 'qaAi', label: '질의응답 AI' },
   { value: 'similarPlantCards', label: '유사 식물 카드' }
 ];
 
@@ -151,9 +152,34 @@ export const storyScenarioOptions: Option<StoryScenario>[] = [
   { value: 'extinction', label: '사라진다면?' },
   { value: 'dayInLife', label: '식물의 하루' },
   { value: 'timeTravel', label: '시간 여행' },
-  { value: 'climateSurvival', label: '기후 속 생존' },
+  { value: 'climateSurvival', label: '기후와 생존' },
   { value: 'nameSecret', label: '이름의 비밀' }
 ];
+
+export const plantCategoryLabels: Record<PlantCategory, string> = {
+  tree: '교목',
+  shrub: '관목',
+  herb: '초본'
+};
+
+export const templateLabelMap: Record<TemplateType, string> = {
+  intro: '식물 소개',
+  storytelling: '스토리텔링',
+  quiz: '퀴즈',
+  mission: '관찰 미션'
+};
+
+export const deploymentPreviewLabels: Record<DeploymentUse, string> = {
+  kiosk: '키오스크 FHD',
+  mobile: '모바일',
+  staticPoster: '정적 포스터'
+};
+
+export const deploymentPreviewSizes: Record<DeploymentUse, string> = {
+  kiosk: '1920x1080',
+  mobile: '1080x2340',
+  staticPoster: 'single page'
+};
 
 export const labelOf = <T extends string>(options: Option<T>[], value: T) =>
   options.find((option) => option.value === value)?.label ?? value;

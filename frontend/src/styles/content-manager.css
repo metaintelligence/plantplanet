@@ -1,0 +1,41 @@
+﻿.content-table {
+  display: grid;
+  gap: 12px;
+}
+
+.content-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  padding: 18px;
+}
+
+.content-row-main {
+  min-width: 0;
+}
+
+.content-row h2 {
+  margin: 10px 0 6px;
+  color: #22342b;
+  font-size: 20px;
+}
+
+.content-row p {
+  margin: 0 0 8px;
+  color: #617066;
+}
+
+.content-row code,
+.share-link {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #32596a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

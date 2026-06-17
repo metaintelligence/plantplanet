@@ -1,3 +1,4 @@
+import { appText } from '../data/appText';
 import type { GeneratedContent } from '../types/content';
 import type { LayoutGenerationJob } from '../types/generationJob';
 
@@ -42,8 +43,8 @@ async function requestJson<T>(path: string, init: RequestInit = {}) {
 async function readError(response: Response) {
   try {
     const payload = (await response.json()) as { message?: string };
-    return payload.message ?? `요청에 실패했습니다. (${response.status})`;
+    return payload.message ?? appText.errors.requestFailed(response.status);
   } catch {
-    return `요청에 실패했습니다. (${response.status})`;
+    return appText.errors.requestFailed(response.status);
   }
 }

@@ -1,0 +1,16 @@
+﻿.content-detail-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-detail-page.content-detail-kiosk,
+.content-detail-page.content-detail-static-poster {
+  width: min(1780px, calc(100vw - 44px));
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.content-detail-grid.device-kiosk,
+.content-detail-grid.device-static-poster {
+  grid-template-columns: minmax(0, 1fr);
+}
+

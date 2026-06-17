@@ -1,28 +1,26 @@
 import type { ReactNode } from 'react';
+import { appShellText } from '../data/appShellText';
+import { exhibitionSites } from '../data/exhibitionSites';
+import { getAiStatusLabel } from '../lib/generationJobs';
 
 interface AppShellProps {
   children: ReactNode;
   menuOpen: boolean;
   currentPath: string;
   contentCount: number;
+  aiStatus: 'idle' | 'queued' | 'running' | 'revising';
   generationLocked: boolean;
   onToggleMenu: () => void;
   onNavigate: (path: string) => void;
   onCreateBlocked: () => void;
 }
 
-const exhibitionSites = [
-  { id: 'baekdudaegan', name: '국립백두대간수목원' },
-  { id: 'sejong', name: '국립세종수목원' },
-  { id: 'native-plants', name: '국립한국자생식물원' },
-  { id: 'garden-culture', name: '국립정원문화원' }
-];
-
 export default function AppShell({
   children,
   menuOpen,
   currentPath,
   contentCount,
+  aiStatus,
   generationLocked,
   onToggleMenu,
   onNavigate,
@@ -38,7 +36,7 @@ export default function AppShell({
     <div className="console-shell">
       <header className="console-header">
         <div className="brand-cluster">
-          <button className="hamburger-button" type="button" aria-label="메뉴 열기" onClick={onToggleMenu}>
+          <button className="hamburger-button" type="button" aria-label={appShellText.menuOpenAria} onClick={onToggleMenu}>
             <span />
             <span />
             <span />
@@ -48,28 +46,19 @@ export default function AppShell({
           </button>
         </div>
         <div className="header-actions">
-          <span className="status-pill">{contentCount}개 콘텐츠</span>
-          <button
-            className={generationLocked ? 'primary-button soft-disabled' : 'primary-button'}
-            type="button"
-            aria-disabled={generationLocked}
-            onClick={() => {
-              if (generationLocked) {
-                onCreateBlocked();
-                return;
-              }
-              go('/create');
-            }}
-          >
-            콘텐츠 생성
-          </button>
+          <span className={`ai-status-badge ${aiStatus}`}>
+            <span className="ai-status-dot" />
+            <strong>{appShellText.aiStatusPrefix}</strong>
+            <em>{getAiStatusLabel(aiStatus)}</em>
+          </span>
+          <span className="status-pill">{appShellText.contentCount(contentCount)}</span>
         </div>
       </header>
 
       <aside className={menuOpen ? 'side-menu open' : 'side-menu'}>
         <div className="side-menu-inner">
           <section className="menu-section">
-            <h2>콘텐츠</h2>
+            <h2>{appShellText.sections.content}</h2>
             <button
               className={currentPath === '/create' ? 'active' : ''}
               type="button"
@@ -81,15 +70,15 @@ export default function AppShell({
                 go('/create');
               }}
             >
-              콘텐츠 생성
+              {appShellText.actions.create}
             </button>
             <button className={currentPath === '/manage' ? 'active' : ''} type="button" onClick={() => go('/manage')}>
-              콘텐츠 관리
+              {appShellText.actions.manage}
             </button>
           </section>
 
           <section className="menu-section">
-            <h2>전시 관리</h2>
+            <h2>{appShellText.sections.exhibition}</h2>
             {exhibitionSites.map((site) => (
               <button
                 className={currentPath === `/exhibition/${site.id}` ? 'active' : ''}
@@ -104,11 +93,11 @@ export default function AppShell({
         </div>
       </aside>
 
-      {menuOpen && <button className="menu-scrim" type="button" aria-label="메뉴 닫기" onClick={onToggleMenu} />}
+      {menuOpen && (
+        <button className="menu-scrim" type="button" aria-label={appShellText.menuCloseAria} onClick={onToggleMenu} />
+      )}
 
       <main className="console-main">{children}</main>
     </div>
   );
 }
-
-export { exhibitionSites };

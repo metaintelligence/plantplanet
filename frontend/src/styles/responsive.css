@@ -1,0 +1,152 @@
+﻿@media (max-width: 980px) {
+  .console-header,
+  .page-header,
+  .intro-band,
+  .content-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .header-actions,
+  .intro-actions,
+  .content-row-actions {
+    flex-wrap: wrap;
+  }
+
+  .console-main {
+    width: min(100% - 24px, 760px);
+  }
+
+  .content-detail-page.content-detail-kiosk,
+  .content-detail-page.content-detail-static-poster {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
+  }
+
+  .metric-grid,
+  .two-column,
+  .wizard-layout,
+  .content-detail-grid,
+  .intro-profile-hero,
+  .intro-fact-grid,
+  .intro-section-grid,
+  .quiz-header,
+  .quiz-stage,
+  .quiz-explain-grid,
+  .mission-briefing,
+  .mission-board,
+  .mission-support-grid,
+  .ai-generated-hero,
+  .ai-generated-section-grid,
+  .choice-grid,
+  .plant-picker-grid,
+  .form-grid,
+  .wizard-summary-grid,
+  .wizard-summary-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-data-facts,
+  .plant-season-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-data-dialog-body {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-data-dialog-body > img {
+    position: static;
+    max-height: 320px;
+  }
+
+  .content-detail-grid.device-mobile,
+  .content-detail-grid.device-kiosk,
+  .content-detail-grid.device-static-poster {
+    grid-template-columns: 1fr;
+  }
+
+  .device-preview-shell.kiosk .device-preview-canvas {
+    height: min(1080px, calc(100vh - 180px));
+    min-height: 420px;
+  }
+
+  .wizard-steps {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .console-header {
+    padding: 10px 14px;
+  }
+
+  .brand-button img {
+    width: 152px;
+  }
+
+  .console-main {
+    width: calc(100% - 16px);
+    padding-top: 18px;
+  }
+
+  .toast-stack {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100vw - 16px);
+  }
+
+  .page-header h1,
+  .intro-band h1,
+  .intro-profile-copy h1,
+  .story-cover-panel h1,
+  .quiz-header h1,
+  .mission-briefing h1,
+  .ai-generated-hero h1 {
+    font-size: 24px;
+  }
+
+  .plant-picker-card,
+  .job-row {
+    grid-template-columns: 1fr;
+  }
+
+  .job-row {
+    display: grid;
+    align-items: stretch;
+  }
+
+  .plant-picker-card img,
+  .plant-data-summary img {
+    width: 100%;
+    height: 150px;
+  }
+
+  .plant-data-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-scroll-list {
+    max-height: 830px;
+  }
+
+  .recent-scroll-list {
+    max-height: 430px;
+  }
+
+  .job-scroll-list {
+    max-height: 620px;
+  }
+
+  .plant-data-dialog-header {
+    display: grid;
+  }
+
+  .generation-settings-header,
+  .generation-settings-grid,
+  .job-history-meta,
+  .dialog-actions {
+    display: grid;
+  }
+}

@@ -1,0 +1,160 @@
+﻿.error-banner {
+  margin-bottom: 16px;
+  border: 1px solid #e3b8b8;
+  border-radius: 8px;
+  background: #fff4f4;
+  color: #923232;
+  padding: 13px 16px;
+  font-weight: 800;
+}
+
+.error-banner.compact {
+  margin-bottom: 0;
+}
+
+.dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgba(28, 37, 32, 0.32);
+  padding: 18px;
+}
+
+.revision-dialog {
+  display: grid;
+  width: min(560px, 100%);
+  gap: 14px;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  box-shadow: 0 24px 70px rgba(34, 48, 42, 0.22);
+  padding: 22px;
+}
+
+.generation-settings-dialog {
+  display: grid;
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  gap: 18px;
+  overflow: auto;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  box-shadow: 0 24px 70px rgba(34, 48, 42, 0.22);
+  padding: 22px;
+}
+
+.job-history-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  gap: 18px;
+  overflow: hidden;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  box-shadow: 0 24px 70px rgba(34, 48, 42, 0.22);
+  padding: 22px;
+}
+
+.generation-settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.generation-settings-header h2 {
+  margin: 0;
+  color: #1f3028;
+  font-size: 24px;
+}
+
+.generation-settings-header p:last-child {
+  margin: 8px 0 0;
+  color: #5b6a60;
+  line-height: 1.55;
+}
+
+.generation-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.generation-settings-item {
+  border: 1px solid #dfe6e1;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 14px;
+}
+
+.generation-settings-item span {
+  display: block;
+  color: #647267;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.generation-settings-item strong {
+  display: block;
+  margin-top: 6px;
+  color: #22342b;
+  line-height: 1.55;
+}
+
+.generation-settings-note {
+  border: 1px solid #dfe6e1;
+  border-radius: 8px;
+  background: #f8faf6;
+  padding: 14px;
+}
+
+.generation-settings-note strong {
+  display: block;
+  color: #22342b;
+}
+
+.generation-settings-note p {
+  margin: 8px 0 0;
+  color: #53645a;
+  line-height: 1.6;
+}
+
+.job-history-dialog-body {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+}
+
+.job-history-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.job-history-scroll {
+  max-height: 560px;
+}
+
+.revision-dialog h2 {
+  margin: 0;
+  color: #1f3028;
+  font-size: 24px;
+}
+
+.revision-dialog p {
+  margin: 8px 0 0;
+  color: #5b6a60;
+  line-height: 1.55;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+

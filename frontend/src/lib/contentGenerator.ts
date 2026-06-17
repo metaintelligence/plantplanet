@@ -12,11 +12,12 @@ import {
   templateOptions,
   toneOptions
 } from '../data/contentOptions';
+import { contentGeneratorText } from '../data/contentGeneratorText';
 import type { ContentSettings, GeneratedContent, GeneratedSection, PlantRecord } from '../types/content';
 
 export function createDefaultSettings(plantId = ''): ContentSettings {
   return {
-    mode: 'general',
+    mode: 'advanced',
     contentName: '',
     plantId,
     template: 'intro',
@@ -47,7 +48,7 @@ export function generateContentFromSettings(
   return {
     id,
     title: buildTitle(settings, plant),
-    summary: `${plant.koreanName} ${labelOf(templateOptions, settings.template)} 콘텐츠`,
+    summary: `${plant.koreanName} ${labelOf(templateOptions, settings.template)} ${contentGeneratorText.summarySuffix}`,
     status: 'published',
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
@@ -65,11 +66,11 @@ function buildTitle(settings: ContentSettings, plant: PlantRecord) {
   }
 
   if (settings.template === 'mission') {
-    return `${plant.koreanName} 관찰 미션`;
+    return `${plant.koreanName} ${contentGeneratorText.missionTitleSuffix}`;
   }
 
   if (settings.template === 'storytelling') {
-    return `${plant.koreanName} 이야기 산책`;
+    return `${plant.koreanName} ${contentGeneratorText.storytellingTitleSuffix}`;
   }
 
   return `${plant.koreanName} ${labelOf(templateOptions, settings.template)}`;
@@ -83,28 +84,31 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
 
   const overview: GeneratedSection[] = [
     {
-      title: `${seasonText} 관찰 포인트`,
+      title: contentGeneratorText.sectionTitles.seasonalPoint(seasonText),
       body: plant.seasonHighlights[settings.season] || plant.seasonHighlights.auto
     },
     {
-      title: '기본 정보',
-      body: `${plant.scientificName}, ${plant.family}. ${plant.habitat}에서 자라며 ${plant.size} 정도까지 성장합니다.`,
+      title: contentGeneratorText.sectionTitles.basicInfo,
+      body: contentGeneratorText.basicInfoBody(plant.scientificName, plant.family, plant.habitat, plant.size),
       items: plant.features
     },
     {
-      title: '생성 설정 요약',
-      body: `${labelOf(purposeOptions, settings.purpose)} 목적의 ${labelOf(toneOptions, settings.tone)} 콘텐츠입니다.`,
+      title: contentGeneratorText.sectionTitles.settingsSummary,
+      body: contentGeneratorText.settingsSummaryBody(
+        labelOf(purposeOptions, settings.purpose),
+        labelOf(toneOptions, settings.tone)
+      ),
       items: [
-        `대상 관람객: ${audienceText}`,
-        `언어: ${languageText}`,
-        `배포 단말: ${labelOf(deploymentLabelOptions, settings.deploymentUse)}`,
-        `현장 위치: ${labelOf(fieldLocationOptions, settings.fieldLocation)}`,
-        `강조 콘텐츠: ${focusText}`,
-        `예상 체험 시간: ${labelOf(estimatedTimeOptions, settings.estimatedTime)}`
+        `${contentGeneratorText.labels.audience}: ${audienceText}`,
+        `${contentGeneratorText.labels.language}: ${languageText}`,
+        `${contentGeneratorText.labels.deploymentUse}: ${labelOf(deploymentLabelOptions, settings.deploymentUse)}`,
+        `${contentGeneratorText.labels.fieldLocation}: ${labelOf(fieldLocationOptions, settings.fieldLocation)}`,
+        `${contentGeneratorText.labels.focusTopics}: ${focusText}`,
+        `${contentGeneratorText.labels.estimatedTime}: ${labelOf(estimatedTimeOptions, settings.estimatedTime)}`
       ]
     },
     {
-      title: '보전 메시지',
+      title: contentGeneratorText.sectionTitles.conservationMessage,
       body: plant.conservationMessage
     }
   ];
@@ -114,17 +118,21 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
       return [
         overview[0],
         {
-          title: '시작 퀴즈',
-          body: `${plant.koreanName}의 특징으로 가장 알맞은 것을 떠올려 보세요.`,
-          items: [plant.features[0], plant.features[1] ?? '잎과 줄기 관찰하기', plant.observationTips[0]]
+          title: contentGeneratorText.sectionTitles.quizLead,
+          body: contentGeneratorText.quizLeadBody(plant.koreanName),
+          items: [
+            plant.features[0],
+            plant.features[1] ?? contentGeneratorText.labels.defaultFeatureFallback,
+            plant.observationTips[0]
+          ]
         },
         ...overview.slice(1)
       ];
     case 'mission':
       return [
         {
-          title: '관찰 미션 시작',
-          body: `${plant.koreanName} 앞에서 멈춰 서서 아래 관찰 미션을 순서대로 수행해 보세요.`,
+          title: contentGeneratorText.sectionTitles.observationMission,
+          body: contentGeneratorText.missionLeadBody(plant.koreanName),
           items: plant.observationTips
         },
         ...overview
@@ -133,7 +141,7 @@ function buildSections(settings: ContentSettings, plant: PlantRecord): Generated
       return [
         {
           title: labelOf(storyScenarioOptions, settings.storyScenario ?? 'nameSecret'),
-          body: `${plant.koreanName}의 특징과 현장 분위기를 엮어 하나의 이야기 흐름으로 따라가도록 구성합니다.`
+          body: contentGeneratorText.storytellingBody(plant.koreanName)
         },
         ...overview
       ];

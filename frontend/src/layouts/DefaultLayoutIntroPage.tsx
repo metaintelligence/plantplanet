@@ -1,3 +1,4 @@
+import { defaultLayoutText } from '../data/defaultLayoutText';
 import type { GeneratedContent, PlantRecord } from '../types/content';
 
 export default function DefaultLayoutIntroPage({
@@ -14,7 +15,7 @@ export default function DefaultLayoutIntroPage({
     <article className="default-layout-page intro-default-layout">
       <header className="intro-profile-hero">
         <div className="intro-profile-copy">
-          <p className="layout-kicker">Plant Profile</p>
+          <p className="layout-kicker">{defaultLayoutText.intro.kicker}</p>
           <h1>{content.title}</h1>
           <p>{leadSection?.body ?? content.summary}</p>
           <div className="intro-profile-tags">
@@ -30,10 +31,10 @@ export default function DefaultLayoutIntroPage({
       </header>
 
       <section className="intro-fact-grid">
-        <Fact label="원산/분포" value={plant.origin} />
-        <Fact label="서식지" value={plant.habitat} />
-        <Fact label="크기" value={plant.size} />
-        <Fact label="개화/관찰" value={plant.floweringSeason} />
+        <Fact label={defaultLayoutText.intro.facts.origin} value={plant.origin} />
+        <Fact label={defaultLayoutText.intro.facts.habitat} value={plant.habitat} />
+        <Fact label={defaultLayoutText.intro.facts.size} value={plant.size} />
+        <Fact label={defaultLayoutText.intro.facts.season} value={plant.floweringSeason} />
       </section>
 
       <section className="intro-section-grid">

@@ -1,3 +1,4 @@
+import { defaultLayoutText } from '../data/defaultLayoutText';
 import type { GeneratedContent, PlantRecord } from '../types/content';
 
 export default function DefaultLayoutMissionPage({
@@ -13,11 +14,11 @@ export default function DefaultLayoutMissionPage({
   return (
     <article className="default-layout-page mission-default-layout">
       <header className="mission-briefing">
-        <div className="mission-code">FIELD MISSION</div>
+        <div className="mission-code">{defaultLayoutText.mission.code}</div>
         <div>
-          <p className="layout-kicker">Mission</p>
+          <p className="layout-kicker">{defaultLayoutText.mission.kicker}</p>
           <h1>{content.title}</h1>
-          <p>{mission?.body ?? `${plant.koreanName}를 관찰하며 현장 미션을 수행합니다.`}</p>
+          <p>{mission?.body ?? defaultLayoutText.mission.fallbackLead(plant.koreanName)}</p>
         </div>
       </header>
 

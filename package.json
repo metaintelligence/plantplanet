@@ -12,7 +12,6 @@
     "start": "npm run start -w backend",
     "start:public": "powershell -ExecutionPolicy Bypass -File scripts/start-public.ps1",
     "redirect:update": "powershell -ExecutionPolicy Bypass -File scripts/update-redirect-target.ps1",
-    "generate:page": "tsx scripts/generate-page.ts",
     "generate:layout": "tsx scripts/generate-layout-page.ts"
   },
   "devDependencies": {

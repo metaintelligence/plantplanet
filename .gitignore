@@ -1,6 +1,7 @@
 node_modules/
 frontend/dist/
 backend/dist/
+backend/logs/
 frontend/tsconfig.tsbuildinfo
 generated/layout-jobs/
 generated/contents.json

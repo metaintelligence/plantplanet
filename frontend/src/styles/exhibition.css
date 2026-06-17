@@ -1,0 +1,346 @@
+﻿.blank-exhibition-canvas {
+  min-height: calc(100vh - 190px);
+  border: 1px dashed #cad6cf;
+  border-radius: 8px;
+  background: #fbfcf7;
+}
+
+.exhibition-page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: calc(100vh - 148px);
+}
+
+.exhibition-page .page-header {
+  margin-bottom: 16px;
+}
+
+.exhibition-image-stage {
+  width: 100%;
+  min-height: 0;
+  border: 1px solid #d8dfda;
+  border-radius: 8px;
+  background: #fbfcf7;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.exhibition-stage-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.exhibition-map-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.94), rgba(240, 243, 239, 0.96)),
+    #eff3ef;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.exhibition-map-viewer.dragging {
+  cursor: grabbing;
+}
+
+.exhibition-map-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.exhibition-map-center {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.exhibition-marker-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.exhibition-marker-item {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition:
+    left 180ms ease,
+    top 180ms ease;
+  will-change: left, top;
+}
+
+.exhibition-map-viewer.dragging .exhibition-marker-item {
+  transition: none;
+}
+
+.exhibition-marker-item.dragging {
+  transition: none;
+}
+
+.exhibition-marker {
+  position: relative;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 999px;
+  background: #ef4444;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(120, 20, 20, 0.28);
+  cursor: grab;
+  pointer-events: auto;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.exhibition-marker:hover {
+  transform: scale(1.35);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.96),
+    0 12px 22px rgba(120, 20, 20, 0.32);
+}
+
+.exhibition-marker:active,
+.exhibition-marker-item.dragging .exhibition-marker,
+.exhibition-marker-item.dragging .exhibition-marker-mini-card {
+  cursor: grabbing;
+}
+
+.exhibition-marker-item.assigned .exhibition-marker {
+  background: #dc2626;
+}
+
+.exhibition-marker-mini-card {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  display: grid;
+  gap: 4px;
+  min-width: 180px;
+  max-width: 240px;
+  border: 1px solid rgba(201, 214, 205, 0.94);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px 12px;
+  box-shadow: 0 16px 34px rgba(34, 48, 42, 0.18);
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  transform: translateX(-50%);
+  text-align: left;
+  cursor: pointer;
+}
+
+.exhibition-marker-mini-card::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-right: 1px solid rgba(201, 214, 205, 0.94);
+  border-bottom: 1px solid rgba(201, 214, 205, 0.94);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.exhibition-marker-mini-card strong {
+  color: #173325;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.exhibition-marker-mini-card span {
+  color: #557260;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.exhibition-marker-mini-card.empty strong {
+  color: #536b5b;
+}
+
+.exhibition-marker-mini-card.empty span {
+  color: #728679;
+}
+
+.exhibition-map-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  flex: 0 0 auto;
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid rgba(173, 185, 177, 0.9);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow:
+    0 24px 60px rgba(34, 48, 42, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.65);
+  overflow: hidden;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.exhibition-map-viewer.dragging .exhibition-map-card {
+  transition: none;
+  box-shadow:
+    0 28px 70px rgba(34, 48, 42, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.exhibition-map-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.exhibition-map-hud {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border: 1px solid rgba(192, 204, 196, 0.94);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(34, 48, 42, 0.12);
+  padding: 0 12px;
+  color: #244535;
+  font-size: 13px;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+}
+
+.marker-dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(17, 24, 20, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.marker-dialog {
+  width: min(720px, 100%);
+  max-height: min(720px, calc(100vh - 48px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 18px;
+  border: 1px solid rgba(206, 216, 209, 0.94);
+  border-radius: 20px;
+  background: #fdfefb;
+  box-shadow: 0 28px 80px rgba(20, 30, 24, 0.28);
+  padding: 24px;
+}
+
+.marker-dialog-header,
+.marker-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.marker-dialog-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marker-dialog-header h2 {
+  margin: 4px 0 0;
+}
+
+.marker-dialog-body {
+  min-height: 0;
+  overflow: auto;
+}
+
+.marker-dialog-empty {
+  display: grid;
+  gap: 6px;
+  border: 1px dashed #cdd9d1;
+  border-radius: 16px;
+  background: #f7faf7;
+  padding: 24px;
+  color: #557260;
+}
+
+.marker-content-list {
+  display: grid;
+  gap: 12px;
+  max-height: 372px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.marker-content-option {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d6e0d8;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 16px 18px;
+  color: #173325;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.marker-content-option:hover {
+  border-color: #87a98f;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(35, 60, 46, 0.08);
+}
+
+.marker-content-option.selected {
+  border-color: #2f6b4a;
+  background: #f4fbf6;
+  box-shadow: 0 0 0 1px rgba(47, 107, 74, 0.18);
+}
+
+.marker-content-option strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.marker-content-option span {
+  color: #557260;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+

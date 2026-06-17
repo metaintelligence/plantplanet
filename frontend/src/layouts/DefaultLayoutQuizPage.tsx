@@ -1,3 +1,4 @@
+import { defaultLayoutText } from '../data/defaultLayoutText';
 import type { GeneratedContent, GeneratedSection, PlantRecord } from '../types/content';
 
 export default function DefaultLayoutQuizPage({
@@ -8,16 +9,16 @@ export default function DefaultLayoutQuizPage({
   plant: PlantRecord;
 }) {
   const quizSection =
-    content.sections.find((section) => section.title.includes('퀴즈')) ?? content.sections[1];
+    content.sections.find((section) => /퀴즈|질문|문제/i.test(section.title)) ?? content.sections[1];
   const supportSections = content.sections.filter((section) => section !== quizSection);
 
   return (
     <article className="default-layout-page quiz-default-layout">
       <header className="quiz-header">
         <div>
-          <p className="layout-kicker">Interactive Quiz</p>
+          <p className="layout-kicker">{defaultLayoutText.quiz.kicker}</p>
           <h1>{content.title}</h1>
-          <p>{quizSection?.body ?? `${plant.koreanName}의 특징을 맞혀보세요.`}</p>
+          <p>{quizSection?.body ?? defaultLayoutText.quiz.fallbackLead(plant.koreanName)}</p>
         </div>
         <img src={plant.image.url} alt={plant.image.alt} />
       </header>
@@ -25,7 +26,7 @@ export default function DefaultLayoutQuizPage({
       <section className="quiz-stage">
         <div className="quiz-question-card">
           <span>Q</span>
-          <h2>{quizSection?.body ?? `${plant.koreanName}의 특징은 무엇일까요?`}</h2>
+          <h2>{quizSection?.body ?? defaultLayoutText.quiz.fallbackQuestion(plant.koreanName)}</h2>
           <div className="quiz-answer-grid">
             {(quizSection?.items ?? plant.features).map((item, index) => (
               <button className={index === 0 ? 'correct' : ''} key={item} type="button">
@@ -36,7 +37,7 @@ export default function DefaultLayoutQuizPage({
           </div>
         </div>
         <aside className="quiz-hint-card">
-          <h3>힌트</h3>
+          <h3>{defaultLayoutText.quiz.hintTitle}</h3>
           <p>{plant.observationTips[0]}</p>
           <span>{plant.scientificName}</span>
         </aside>

@@ -81,10 +81,7 @@ function readPayload(): GenerateLayoutPayload {
 }
 
 function readSettings(payload: GenerateLayoutPayload) {
-  const normalizeSettings = (settings: Record<string, unknown>) => ({
-    ...settings,
-    template: settings.template === 'checklist' ? 'mission' : settings.template
-  });
+  const normalizeSettings = (settings: Record<string, unknown>) => ({ ...settings });
 
   if (payload.settings && typeof payload.settings === 'object') {
     return normalizeSettings(payload.settings);

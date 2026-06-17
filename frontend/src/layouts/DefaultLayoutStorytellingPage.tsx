@@ -1,3 +1,4 @@
+import { defaultLayoutText } from '../data/defaultLayoutText';
 import type { GeneratedContent, PlantRecord } from '../types/content';
 
 export default function DefaultLayoutStorytellingPage({
@@ -14,7 +15,7 @@ export default function DefaultLayoutStorytellingPage({
     <article className="default-layout-page storytelling-default-layout">
       <header className="story-cover" style={{ backgroundImage: `url(${plant.image.url})` }}>
         <div className="story-cover-panel">
-          <p className="layout-kicker">Storytelling</p>
+          <p className="layout-kicker">{defaultLayoutText.storytelling.kicker}</p>
           <h1>{content.title}</h1>
           <p>{storyLead?.body ?? content.summary}</p>
         </div>
