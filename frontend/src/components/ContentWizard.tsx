@@ -65,7 +65,7 @@ export default function ContentWizard({
     setDraft((current) => ({ ...current, [key]: value }));
   };
 
-  const toggleList = <K extends 'focusTopics' | 'featureOptions' | 'audience' | 'languages'>(
+  const toggleList = <K extends 'focusTopics' | 'audience' | 'languages'>(
     key: K,
     value: ContentSettings[K][number]
   ) => {
@@ -201,13 +201,11 @@ export default function ContentWizard({
               fieldLocation={draft.fieldLocation}
               season={draft.season}
               estimatedTime={draft.estimatedTime}
-              featureOptions={draft.featureOptions}
               extraRequest={draft.extraRequest}
               onDeploymentUseChange={(value) => update('deploymentUse', value)}
               onFieldLocationChange={(value) => update('fieldLocation', value)}
               onSeasonChange={(value) => update('season', value)}
               onEstimatedTimeChange={(value) => update('estimatedTime', value)}
-              onToggleFeatureOption={(value) => toggleList('featureOptions', value)}
               onExtraRequestChange={(value) => update('extraRequest', value)}
             />
           )}

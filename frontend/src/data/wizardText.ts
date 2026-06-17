@@ -17,7 +17,7 @@ export const wizardText = {
     template: '선택한 유형에 따라 방문자 경험의 기본 흐름이 달라집니다.',
     layout: '레이아웃 생성 방식을 선택합니다.',
     audience: '대상 관람객과 출력 언어를 선택합니다.',
-    field: '배포 단말, 전시 공간, 추가 기능과 별도 요청사항을 입력합니다.',
+    field: '배포 단말, 전시 공간, 별도 요청사항을 입력합니다.',
     review: '생성 전 마지막으로 전체 선택 결과를 한 번에 확인합니다.'
   },
   dynamicDescriptions: {

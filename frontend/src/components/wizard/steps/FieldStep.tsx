@@ -1,13 +1,12 @@
 import {
   deploymentOptions,
   estimatedTimeOptions,
-  featureOptions,
   fieldLocationOptions,
   seasonOptions
 } from '../../../data/contentOptions';
 import { wizardText } from '../../../data/wizardText';
 import type { ContentSettings } from '../../../types/content';
-import { CheckboxGroup, SelectField } from '../WizardFieldControls';
+import { SelectField } from '../WizardFieldControls';
 import WizardSectionTitle from '../WizardSectionTitle';
 
 interface FieldStepProps {
@@ -15,13 +14,11 @@ interface FieldStepProps {
   fieldLocation: ContentSettings['fieldLocation'];
   season: ContentSettings['season'];
   estimatedTime: ContentSettings['estimatedTime'];
-  featureOptions: ContentSettings['featureOptions'];
   extraRequest: string;
   onDeploymentUseChange: (value: ContentSettings['deploymentUse']) => void;
   onFieldLocationChange: (value: ContentSettings['fieldLocation']) => void;
   onSeasonChange: (value: ContentSettings['season']) => void;
   onEstimatedTimeChange: (value: ContentSettings['estimatedTime']) => void;
-  onToggleFeatureOption: (value: ContentSettings['featureOptions'][number]) => void;
   onExtraRequestChange: (value: string) => void;
 }
 
@@ -30,13 +27,11 @@ export default function FieldStep({
   fieldLocation,
   season,
   estimatedTime,
-  featureOptions: selectedFeatureOptions,
   extraRequest,
   onDeploymentUseChange,
   onFieldLocationChange,
   onSeasonChange,
   onEstimatedTimeChange,
-  onToggleFeatureOption,
   onExtraRequestChange
 }: FieldStepProps) {
   return (
@@ -63,12 +58,6 @@ export default function FieldStep({
           onChange={onEstimatedTimeChange}
         />
       </div>
-      <CheckboxGroup
-        label={wizardText.fields.featureOptions}
-        options={featureOptions}
-        values={selectedFeatureOptions}
-        onToggle={onToggleFeatureOption}
-      />
       <label className="field full">
         <span>{wizardText.fields.extraRequest}</span>
         <textarea

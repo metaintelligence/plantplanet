@@ -2,7 +2,6 @@ import {
   audienceOptions,
   deploymentOptions,
   estimatedTimeOptions,
-  featureOptions,
   fieldLocationOptions,
   focusTopicOptions,
   labelOf,
@@ -42,13 +41,7 @@ export function buildWizardSummaryItems(settings: ContentSettings, plant: PlantR
     { label: contentSettingsText.summaryItems.fieldLocation, value: labelOf(fieldLocationOptions, settings.fieldLocation) },
     { label: contentSettingsText.summaryItems.season, value: labelOf(seasonOptions, settings.season) },
     { label: contentSettingsText.summaryItems.estimatedTime, value: labelOf(estimatedTimeOptions, settings.estimatedTime) },
-    { label: contentSettingsText.summaryItems.focusTopics, value: joinOptionLabels(focusTopicOptions, settings.focusTopics) },
-    {
-      label: contentSettingsText.summaryItems.featureOptions,
-      value: settings.featureOptions.length
-        ? joinOptionLabels(featureOptions, settings.featureOptions)
-        : contentSettingsText.summaryItems.none
-    }
+    { label: contentSettingsText.summaryItems.focusTopics, value: joinOptionLabels(focusTopicOptions, settings.focusTopics) }
   ];
 
   if (settings.template === 'storytelling') {
