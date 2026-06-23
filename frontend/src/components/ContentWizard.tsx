@@ -40,11 +40,13 @@ export default function ContentWizard({
   const [generationStatus, setGenerationStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [infoPlant, setInfoPlant] = useState<PlantRecord | null>(null);
+  const [isContentNameCustom, setIsContentNameCustom] = useState(Boolean(editingContent));
 
   useEffect(() => {
     setDraft(createWizardSettings(editingContent, plants[0]?.id ?? ''));
     setStepIndex(0);
     setGenerationStatus('');
+    setIsContentNameCustom(Boolean(editingContent));
   }, [editingContent, plants]);
 
   const step = wizardSteps[stepIndex] as StepKey;
@@ -53,13 +55,13 @@ export default function ContentWizard({
   const canGoNext = step !== 'plant' || Boolean(draft.plantId);
 
   useEffect(() => {
-    if (!selectedPlant || draft.contentName.trim()) {
+    if (!selectedPlant || isContentNameCustom) {
       return;
     }
 
     const nextName = buildDefaultContentName(selectedPlant.koreanName, draft.template);
     setDraft((current) => (current.contentName === nextName ? current : { ...current, contentName: nextName }));
-  }, [draft.contentName, draft.template, selectedPlant]);
+  }, [draft.template, isContentNameCustom, selectedPlant]);
 
   const update = <K extends keyof ContentSettings>(key: K, value: ContentSettings[K]) => {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -89,6 +91,11 @@ export default function ContentWizard({
       template,
       storyScenario: template === 'storytelling' ? current.storyScenario ?? 'nameSecret' : undefined
     }));
+  };
+
+  const handleContentNameChange = (value: string) => {
+    setIsContentNameCustom(Boolean(value.trim()));
+    update('contentName', value);
   };
 
   const handleGenerate = async () => {
@@ -218,7 +225,7 @@ export default function ContentWizard({
               generationBlocked={generationBlocked}
               isSubmitting={isSubmitting}
               statusMessage={generationStatus}
-              onContentNameChange={(value) => update('contentName', value)}
+              onContentNameChange={handleContentNameChange}
               onGenerate={handleGenerate}
             />
           )}
